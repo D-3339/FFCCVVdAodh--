@@ -228,12 +228,7 @@ local function saveKeyToFile(key)
 end
 
 local function runloadstring()
-    local tam1 = "https://raw.githubusercontent.com"
-    local user = "D-3339"
-    local branch = "FFCCVVdAodh--/refs/heads/G-999H"
-    local file_path = "F-Gvxcpha-%7B%7D/Zmas-%7B%7D"
-
-    local getsc = tam1.."/"..user.."/"..branch.."/"..file_path
+    local getsc = "https://raw.githubusercontent.com/D-3339/FFCCVVdAodh--/refs/heads/G-999H/F-Gvxcpha-%7B%7D/Zmas-%7B%7D"
 
     function loadme(load)
         local success, result = pcall(game.HttpGet, game, load)
