@@ -1,1 +1,1722 @@
 
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/Unknownproootest/Unknown-TreasureQuest/Alt/Test_FixMinimizeKey"))()
+
+local openshit = Instance.new("ScreenGui")
+local mainopen = Instance.new("TextButton")
+local mainopens = Instance.new("UICorner")
+local loki = Instance.new("ImageLabel")
+local posto = Instance.new("UIStroke")
+
+openshit.Name = "openshit"
+openshit.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+openshit.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+openshit.ResetOnSpawn = false
+
+mainopen.Name = "mainopen"
+mainopen.Parent = openshit
+mainopen.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainopen.Position = UDim2.new(0.101969875, 0, 0.110441767, 0)
+mainopen.Size = UDim2.new(0, 64, 0, 42)
+mainopen.Text = ""
+mainopen.Visible = true
+mainopens.Parent = mainopen
+ 
+loki.Name = "loki"
+loki.Parent = mainopen
+loki.BackgroundColor3 = Color3.fromRGB(224,224,224)
+loki.BackgroundTransparency = 1.000
+loki.Position = UDim2.new(-0.0529999994, 0, -0.244000003, 0)
+loki.Size = UDim2.new(0, 69, 0, 62)
+loki.Image = "rbxassetid://73949062338801"
+ 
+posto.Name = "posto"
+posto.Parent = mainopen
+posto.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+posto.Color = Color3.fromRGB(224,224,224)
+posto.LineJoinMode = Enum.LineJoinMode.Round
+posto.Thickness = 1
+posto.Transparency = 0
+posto.Enabled = true
+posto.Archivable = true
+ 
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+ 
+local function MakeDraggable(topbarobject, object)
+    local Dragging = nil
+    local DragInput = nil
+    local DragStart = nil
+    local StartPosition = nil
+    
+    local function Update(input)
+        local Delta = input.Position - DragStart
+        local pos = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + Delta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + Delta.Y)
+        local Tween = TweenService:Create(object, TweenInfo.new(0.15), {
+            Position = pos
+        })
+        Tween:Play()
+    end
+    
+    topbarobject.InputBegan:Connect(
+        function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                Dragging = true
+                DragStart = input.Position
+                StartPosition = object.Position
+                
+                input.Changed:Connect(
+                    function()
+                        if input.UserInputState == Enum.UserInputState.End then
+                            Dragging = false
+                        end
+                    end
+                )
+            end
+        end
+    )
+    
+    topbarobject.InputChanged:Connect(
+        function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                DragInput = input
+            end
+        end
+    )
+    
+    UserInputService.InputChanged:Connect(
+        function(input)
+            if input == DragInput and Dragging then
+                Update(input)
+            end
+        end
+    )
+end
+
+MakeDraggable(mainopen, mainopen) -- Making the button draggable
+
+local RunService = game:GetService("RunService")
+local fpsCounter = Instance.new("ScreenGui")
+local Player = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+fpsCounter.Parent = game.CoreGui
+fpsCounter.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+fpsCounter.ResetOnSpawn = false
+
+local label = Instance.new("TextLabel")
+label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+label.BackgroundTransparency = 1.000
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.GothamBlack
+label.Size = UDim2.new(0, 150, 0, 70)
+label.Position = UDim2.new(0, 200, 0, 10)
+label.Text = "FPS: 0\nTime Played: 0h 0m 0s"
+label.TextSize = 10
+label.Parent = fpsCounter
+
+local startTime = tick()
+local lastUpdateTime = tick()
+local frameCount = 0
+
+RunService.RenderStepped:Connect(function()
+    local currentTime = tick()
+    local deltaTime = currentTime - lastUpdateTime
+    frameCount = frameCount + 1
+    
+    if frameCount == 1 and untilloaded == true then
+       game:GetService("Players").LocalPlayer:Kick("Device Saver: CRASH DETECTED")
+    end
+
+    if deltaTime >= 1 then
+        local fps = math.round(frameCount / deltaTime)
+        local elapsedTime = currentTime - startTime
+
+        local hours = math.floor(elapsedTime / 3600)
+        local minutes = math.floor((elapsedTime % 3600) / 60)
+        local seconds = math.floor(elapsedTime % 60)
+
+        label.Text = "FPS: " .. fps .. "\nClient Timer: " .. hours .. "h " .. minutes .. "m " .. seconds .. "s"
+
+        lastUpdateTime = currentTime
+        frameCount = 0
+    end
+end)
+
+mainopen.MouseButton1Click:Connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, "LeftControl", false, game)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, "LeftControl", false, game)
+end)
+
+if not require then
+    return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: require(path) | PLEASE TRY OTHER EXECUTORS")
+else
+print("Supported require()")
+end
+
+if not firetouchinterest  then
+    return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: firetouchinterest() | PLEASE TRY OTHER EXECUTORS")
+else
+print("Supported firetouchinterest()")
+end
+
+if not setfpscap or setfpscap(500) then
+    return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: setfpscap() | PLEASE TRY OTHER EXECUTORS")
+else
+print("Supported setfpscap()")
+end
+
+if not hookmetamethod then
+    return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: hookmetamethod() | PLEASE TRY OTHER EXECUTORS")
+else
+print("Supported hookmetamethod()")
+end
+
+if game.Players then
+print("Advance Api")
+else
+print("Common Api")
+end
+
+local workspace = game:GetService("Workspace")
+local Player = game.Players.LocalPlayer
+local vu = game:GetService("VirtualUser")
+local TeleportService = game:GetService('TeleportService')
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local camera = workspace.CurrentCamera
+local normalgrav = workspace.Gravity
+local TweenService = game:GetService("TweenService")
+
+local Window = Fluent:CreateWindow({
+    Title = "Unknown Hub X ZA",
+    SubTitle = "V2.7 Made by Unknownproooolucky discord.gg/d2a3KkTD6r",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+local Options = Fluent.Options
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "rbxassetid://7733960981" }),
+    AutoFarm = Window:AddTab({ Title = "Auto Farms", Icon = "rbxassetid://7743866529" }),
+    Zombie = Window:AddTab({ Title = "Zombie Mods", Icon = "rbxassetid://7734053426" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "rbxassetid://7734022107" }),
+    Settings = Window:AddTab({ Title = "Save Config", Icon = "rbxassetid://7734052335" })
+}
+
+-- Main
+
+Tabs.Main:AddParagraph({
+        Title = "Leaderboard Notifier",
+        Content = " "
+    })
+    
+local control = {
+	Money = false,
+	Kill = false,
+	Level = false
+}
+
+    local Toggle = Tabs.Main:AddToggle("KillNotify", {Title = "Kill Notification", Default = false })
+
+    Toggle:OnChanged(function(State)
+        control.Kill = State
+    end)
+    
+    Options.KillNotify:SetValue(false)
+    
+    local Toggle = Tabs.Main:AddToggle("LevelNotify", {Title = "Level Notification", Default = false })
+
+    Toggle:OnChanged(function(State)
+        control.Level = State
+    end)
+    
+    Options.LevelNotify:SetValue(false)
+    
+    local Toggle = Tabs.Main:AddToggle("MoneyNotify", {Title = "Money Notification", Default = false })
+
+    Toggle:OnChanged(function(State)
+        control.Money = State
+    end)
+    
+    Options.MoneyNotify:SetValue(false)
+ 
+ Player.leaderstats.Cash:GetPropertyChangedSignal("Value"):Connect(function()
+if control.Money == true then
+game.StarterGui:SetCore("SendNotification", {
+    Title = "$ Money Notification $",
+    Text = "Money Counted: [ " .. tostring(Player.leaderstats.Cash.Value) .. " ]",
+    Duration = 5
+})
+end
+end)
+
+Player.leaderstats.Kills:GetPropertyChangedSignal("Value"):Connect(function()
+    if control.Kill == true then
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "☠️ Killed Notification ☠️",
+            Text = "Weapon Type: " .. tostring(getEquippedWeapon(Player)) .. "\nKilled Counted: [  " .. tostring(Player.leaderstats.Kills.Value) .. " ]",
+            Duration = 5
+        })
+    end
+end)
+
+
+Player.leaderstats.Level:GetPropertyChangedSignal("Value"):Connect(function()
+if control.Level == true then
+game.StarterGui:SetCore("SendNotification", {
+    Title = "↑ Level Notification ↑",
+    Text = "Level Counted: [ " .. tostring(Player.leaderstats.Level.Value) .. " ]",
+    Duration = 5
+})
+
+end
+end)
+
+Tabs.Main:AddParagraph({
+        Title = "Character",
+        Content = " "
+    })
+
+local Toggle = Tabs.Main:AddToggle("AntiAfk", {Title = "Anti-AFK", Default = false })
+
+    Toggle:OnChanged(function()
+local vu = game:GetService("VirtualUser")
+repeat wait() until game:IsLoaded() 
+	game:GetService("Players").LocalPlayer.Idled:connect(function()
+    game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+     end)
+ end)
+
+Options.AntiAfk:SetValue(true)
+
+local HumanModCons = {}
+local speaker = game.Players.LocalPlayer
+
+-- Define the slider for walkspeed
+local SliderWalkSpeed = Tabs.Main:AddSlider("Walkspeed", {
+    Title = "Walkspeed Slider",
+    Description = "",
+    Default = 16,
+    Min = 16,
+    Max = 200,
+    Rounding = 1,
+    Callback = function(speed)
+        -- Function to update walkspeed
+        local function WalkSpeedChange()
+            local Char = speaker.Character or workspace:FindFirstChild(speaker.Name)
+            local Human = Char and Char:FindFirstChildWhichIsA("Humanoid")
+            if Char and Human then
+                Human.WalkSpeed = speed
+            end
+        end
+        
+        WalkSpeedChange()
+        
+        -- Monitor changes to WalkSpeed property
+        if HumanModCons.wsConn then
+            HumanModCons.wsConn:Disconnect()
+        end
+        local Char = speaker.Character or speaker.CharacterAdded:Wait()
+        local Human = Char:WaitForChild("Humanoid")
+        HumanModCons.wsConn = Human.Changed:Connect(function(property)
+            if property == "WalkSpeed" then
+                WalkSpeedChange()
+            end
+        end)
+    end
+})
+
+-- Define the slider for jump power
+local SliderJumpPower = Tabs.Main:AddSlider("JumpPower", {
+    Title = "Jump Power Slider",
+    Description = "",
+    Default = 50,
+    Min = 50,
+    Max = 200,
+    Rounding = 1,
+    Callback = function(jpower)
+        -- Function to update jump power
+        local function JumpPowerChange()
+            local Char = speaker.Character or workspace:FindFirstChild(speaker.Name)
+            local Human = Char and Char:FindFirstChildWhichIsA("Humanoid")
+            if Char and Human then
+                if Human.UseJumpPower then
+                    Human.JumpPower = jpower
+                else
+                    Human.JumpHeight = jpower
+                end
+            end
+        end
+        
+        JumpPowerChange()
+        
+        -- Monitor changes to JumpPower or JumpHeight property
+        if HumanModCons.jpConn then
+            HumanModCons.jpConn:Disconnect()
+        end
+        local Char = speaker.Character or speaker.CharacterAdded:Wait()
+        local Human = Char:WaitForChild("Humanoid")
+        HumanModCons.jpConn = Human.Changed:Connect(function(property)
+            if property == "JumpPower" or property == "JumpHeight" then
+                JumpPowerChange()
+            end
+        end)
+    end
+})
+
+local FLYING = false
+local velocityHandlerName = "VelocityHandler"
+local gyroHandlerName = "GyroHandler"
+local mfly1, mfly2
+local currentCharacter
+
+local function getRoot(character)
+    return character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso")
+end
+
+local function unmobilefly(player)
+    pcall(function()
+        FLYING = false
+        local character = player.Character
+        if character then
+            local root = getRoot(character)
+            if root then
+                local velocityHandler = root:FindFirstChild(velocityHandlerName)
+                local gyroHandler = root:FindFirstChild(gyroHandlerName)
+
+                if velocityHandler then
+                    velocityHandler:Destroy()
+                end
+
+                if gyroHandler then
+                    gyroHandler:Destroy()
+                end
+
+                local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+                if humanoid then
+                    humanoid.PlatformStand = false
+                end
+            end
+        end
+
+        if mfly1 then
+            mfly1:Disconnect()
+        end
+
+        if mfly2 then
+            mfly2:Disconnect()
+        end
+    end)
+end
+
+local function mobilefly(player, vfly)
+    unmobilefly(player)
+    FLYING = true
+
+    local character = player.Character
+    local root = getRoot(character)
+
+    if character and root then
+        local camera = workspace.CurrentCamera
+        local v3none = Vector3.new()
+        local v3zero = Vector3.new(0, 0, 0)
+        local v3inf = Vector3.new(9e9, 9e9, 9e9)
+
+        local controlModule = require(player.PlayerScripts:WaitForChild("PlayerModule"):WaitForChild("ControlModule"))
+        local bv = Instance.new("BodyVelocity")
+        bv.Name = velocityHandlerName
+        bv.Parent = root
+        bv.MaxForce = v3zero
+        bv.Velocity = v3zero
+
+        local bg = Instance.new("BodyGyro")
+        bg.Name = gyroHandlerName
+        bg.Parent = root
+        bg.MaxTorque = v3inf
+        bg.P = 1000
+        bg.D = 20
+
+        mfly1 = player.CharacterAdded:Connect(function()
+            unmobilefly(player)
+            currentCharacter = player.Character
+            mobilefly(player, vfly)
+        end)
+
+        mfly2 = RunService.RenderStepped:Connect(function()
+            root = getRoot(player.Character)
+            camera = workspace.CurrentCamera
+            if player.Character:FindFirstChildWhichIsA("Humanoid") and root and root:FindFirstChild(velocityHandlerName) and root:FindFirstChild(gyroHandlerName) then
+                local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                local VelocityHandler = root:FindFirstChild(velocityHandlerName)
+                local GyroHandler = root:FindFirstChild(gyroHandlerName)
+
+                if VelocityHandler and GyroHandler then
+                    VelocityHandler.MaxForce = v3inf
+                    GyroHandler.MaxTorque = v3inf
+
+                    if not vfly and humanoid then
+                        humanoid.PlatformStand = false
+                    end
+
+                    GyroHandler.CFrame = camera.CoordinateFrame
+                    VelocityHandler.Velocity = v3none
+
+                    local direction = controlModule:GetMoveVector()
+                    if direction.X ~= 0 or direction.Z ~= 0 then
+                        local moveVector = Vector3.new(direction.X, 0, direction.Z).unit
+                        local rightVector = camera.CFrame.RightVector
+                        local forwardVector = camera.CFrame.LookVector
+
+                        local flyDirection = (rightVector * moveVector.X - forwardVector * moveVector.Z).unit
+
+                        VelocityHandler.Velocity = flyDirection * (_G.flySpeed * 20)
+                        RunService.RenderStepped:Wait()
+                    end
+                end
+            end
+        end)
+    end
+end
+
+local function toggleFly(player, toggleValue)
+    if toggleValue then
+        mobilefly(player, true)
+    else
+        unmobilefly(player)
+    end
+end
+
+-- Your loop structure
+_G.loops = false
+
+local function flyLoop()
+    while wait(0.15) do
+        if _G.loops then
+            local player = game:GetService("Players").LocalPlayer
+            if player and player.Character then
+                mobilefly(player, true)
+            end
+        end
+    end
+end
+
+local Toggle = Tabs.Main:AddToggle("FlyToggle", { Title = "Fly Toggle", Default = false })
+
+Toggle:OnChanged(function()
+    local player = game:GetService("Players").LocalPlayer
+    _G.loops = Toggle.Value
+    toggleFly(player, Toggle.Value)
+end)
+
+Options.FlyToggle:SetValue(false)
+
+_G.flySpeed = 20  -- Default fly speed
+
+local FlySpeedInput = Tabs.Main:AddInput("FlySpeedInput", {
+    Title = "Fly Speed",
+    Default = tostring(_G.flySpeed),
+    Placeholder = "Enter fly speed",
+    Numeric = true,
+    Finished = false,
+    Callback = function(Value)
+        _G.flySpeed = tonumber(Value) or 20
+        toggleFly(player, Toggle.Value)
+    end
+})
+
+-- Start the loop
+spawn(flyLoop)
+
+local Toggle = Tabs.Main:AddToggle("Noclip", {Title = "Noclip", Default = false })
+
+local NoClipx = false
+
+local function Noclip()
+            pcall(function()
+                for i, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                 end
+            end
+      end)
+end
+
+    Toggle:OnChanged(function(State)
+NoClipx = State
+repeat
+if NoClipx then
+   Noclip()
+       wait(0.1)
+        end
+       until not NoClipx == true
+    end)
+
+Options.Noclip:SetValue(false)
+
+-- AutoFarm
+local function getNearestBosses()
+local nearest, dist = nil, math.huge -- Set a very large initial distance
+    for _, v in pairs(game.Workspace.BossFolder:GetDescendants()) do
+        if v:FindFirstChild("Head") then
+            local m = (Player.Character.Head.Position - v.Head.Position).magnitude
+            if m < dist then
+                dist = m
+                nearest = v
+            end
+        end
+    end
+    return nearest
+end
+
+local function getNearest()
+    local nearest, dist = nil, math.huge -- Set a very large initial distance
+    for _, v in pairs(game.Workspace.BossFolder:GetDescendants()) do
+        if v:FindFirstChild("Head") then
+            local m = (Player.Character.Head.Position - v.Head.Position).magnitude
+            if m < dist then
+                dist = m
+                nearest = v
+            end
+        end
+    end
+    for _, v in pairs(game.Workspace.enemies:GetDescendants()) do
+        if v:FindFirstChild("Head") then
+            local m = (Player.Character.Head.Position - v.Head.Position).magnitude
+            if m < dist then
+                dist = m
+                nearest = v
+            end
+        end
+    end
+    return nearest
+end
+
+local Player = game.Players.LocalPlayer
+
+function GetGunsName()
+    local gunNames = {}
+    for _, Thing in pairs(game:GetService("ReplicatedStorage").Guns:GetChildren()) do
+        if Thing:IsA("Tool") then
+            table.insert(gunNames, Thing.Name)
+        end
+    end
+    return gunNames
+end
+
+function GetKnivesName()
+    local knifeNames = {}
+    for _, Thing in pairs(game:GetService("ReplicatedStorage").Knives:GetChildren()) do
+        if Thing:IsA("Tool") then
+            table.insert(knifeNames, Thing.Name)
+        end
+    end
+    return knifeNames
+end
+
+function EquipGun()
+    local gunNames = GetGunsName() 
+    for _, Thing in pairs(Player.Backpack:GetChildren()) do
+        if Thing:IsA("Tool") and table.find(gunNames, Thing.Name) then
+            Thing.Parent = Player.Character
+        end
+    end
+end
+
+function EquipKnives()
+    local knifeNames = GetKnivesName()
+    for _, Thing in pairs(Player.Backpack:GetChildren()) do
+        if Thing:IsA("Tool") and table.find(knifeNames, Thing.Name) then
+            Thing.Parent = Player.Character
+        end
+    end
+end
+
+function tweenfunction(coordination)
+	TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), {CFrame = coordination}):Play()
+end
+
+Tabs.AutoFarm:AddParagraph({
+        Title = "Auto Farm",
+        Content = " "
+    })
+
+local FarmToggle = false
+local PositonX = 0
+local groundDistance = 12
+local PositionZ = 9
+local FarmType = "CFrame"
+
+local Toggle = Tabs.AutoFarm:AddToggle("FarmZombies", {Title = "Auto Farm (Zombies/Boss)", Default = false })
+
+    Toggle:OnChanged(function(State)
+     FarmToggle = State
+if FarmToggle == true then
+	workspace.Gravity = 0
+else
+	workspace.Gravity = normalgrav
+end
+
+repeat
+if FarmToggle == true and wait() then
+spawn(function()
+if _G._userGun == true then
+-- game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+if FarmType == "CFrame" and getNearest() then
+Player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(PositonX, groundDistance, PositonZ))
+elseif FarmType == "Tween" and getNearest() then
+Player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(PositonX, groundDistance, PositonZ)))
+end
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
+else
+-- game:GetService("Workspace").CurrentCamera.CFrame = CFrame.new(game:GetService("Workspace").CurrentCamera.CFrame.p, getNearest().Head.Position)
+if FarmType == "CFrame" and getNearest() then
+Player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+Player.Character.HumanoidRootPart.CFrame = (getNearest().HumanoidRootPart.CFrame * CFrame.new(PositonX, groundDistance, PositonZ))
+elseif FarmType == "Tween" and getNearest() then
+Player.Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+tweenfunction((getNearest().HumanoidRootPart.CFrame * CFrame.new(PositonX, groundDistance, PositonZ)))
+end
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position,})
+             end
+         end)
+    end
+    until FarmToggle == false
+end)
+    
+Tabs.AutoFarm:AddParagraph({
+        Title = "Farming Settings",
+        Content = ""
+    })
+
+ local Dropdown = Tabs.AutoFarm:AddDropdown("FarmingType", {
+        Title = "Farming Type",
+        Values = {"CFrame", "Tween"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        FarmType = Value
+    end)
+    
+ local Slider = Tabs.AutoFarm:AddSlider("PosX", {
+        Title = "Farm Position X",
+        Description = "",
+        Default = 0,
+        Min = 0,
+        Max = 30,
+        Rounding = 1,
+        Callback = function(Value)
+            PositonX = tonumber(Value) or 0
+        end
+    })
+    
+ local Slider = Tabs.AutoFarm:AddSlider("PosY", {
+        Title = "Farm Position Y",
+        Description = "",
+        Default = 12,
+        Min = 0,
+        Max = 30,
+        Rounding = 1,
+        Callback = function(Value)
+            groundDistance = tonumber(Value) or 12
+        end
+    })
+    
+local Slider = Tabs.AutoFarm:AddSlider("PosZ", {
+        Title = "Farm Position Z",
+        Description = "",
+        Default = 9,
+        Min = 0,
+        Max = 30,
+        Rounding = 1,
+        Callback = function(Value)
+            PositonZ = tonumber(Value) or 9
+        end
+    })
+    
+Tabs.AutoFarm:AddParagraph({
+        Title = "Auto Equip",
+        Content = " "
+    })
+    
+local EquipKnivesTG = false
+local EquipGunsTG = false
+
+local Toggle = Tabs.AutoFarm:AddToggle("Equip1", {Title = "Equip Gun", Default = false })
+
+    Toggle:OnChanged(function(State)
+     EquipGunsTG = State
+     
+     if EquipGunsTG and EquipKnivesTG == true then
+       Fluent:Notify({
+           Title = "Disabled Equip Knives",
+            Content = "",
+            SubContent = "", -- Optional
+            Duration = 5 -- Set to nil to make the notification not disappear
+        })
+        Options.Equip2:SetValue(false)
+     end
+     
+     
+while wait(1) and EquipGunsTG do
+          EquipGun()
+        end
+    end)
+    
+local Toggle = Tabs.AutoFarm:AddToggle("Equip2", {Title = "Equip Knives", Default = false })
+
+    Toggle:OnChanged(function(State)
+     EquipKnivesTG = State
+     
+     if EquipKnivesTG and EquipGunsTG == true then
+       Fluent:Notify({
+           Title = "Disabled Equip Gun",
+            Content = "",
+            SubContent = "", -- Optional
+            Duration = 5 -- Set to nil to make the notification not disappear
+        })
+        Options.Equip1:SetValue(false)
+     end
+
+while wait(1) and EquipKnivesTG do
+         EquipKnives()
+      end
+    end)
+ 
+ Tabs.AutoFarm:AddParagraph({
+        Title = "Auto Crates",
+        Content = " "
+    })
+    
+local SelectedCrate = "Basic #1"
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("SelectedCrate", {
+        Title = "Select Crate",
+        Values = {"Basic #1","Basic #2","Basic #3","Uncommon","Rare","Legendary"},
+        Multi = false,
+        Default = 1,
+    })
+
+
+    Dropdown:OnChanged(function(list)
+        SelectedCrate = list
+    end)
+    
+local Toggle = Tabs.AutoFarm:AddToggle("AutoBuyCrate", {Title = "Auto Buy Crates", Default = false })
+
+    Toggle:OnChanged(function(bool)
+    OpenCrates = bool
+	while wait(0.1) and OpenCrates do
+		if OpenCrates == false then break end
+         game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("unbox_box",SelectedCrate)
+        end
+    end)
+ 
+Tabs.AutoFarm:AddParagraph({
+        Title = "Auto Collect/Claim",
+        Content = " "
+    })
+
+local AutoClaimMission = false
+
+local Toggle = Tabs.AutoFarm:AddToggle("ClaimMission", {Title = "Auto Claim Mission", Default = false })
+
+    Toggle:OnChanged(function(State)
+       AutoClaimMission = State
+	while wait() and AutoClaimMission do
+		if AutoClaimMission == false then break end
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",1)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",2)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",3)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",4)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",5)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",6)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",7)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",8)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",9)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",10)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",11)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",12)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",13)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",14)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",15)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",16)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",17)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",18)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",19)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",20)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",21)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",22)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",23)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",24)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",25)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",26)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",27)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",28)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("claimReward",29)
+	end
+ end)
+    
+local AutoDiscardMission = false
+   
+local Toggle = Tabs.AutoFarm:AddToggle("ClearMission", {Title = "Auto Discard Mission", Default = false })
+
+    Toggle:OnChanged(function(State)
+        AutoDiscardMission = State
+	while wait() and AutoDiscardMission do
+		if AutoDiscardMission == false then break end
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",1)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",2)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",3)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",4)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",5)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",6)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",7)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",8)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",9)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",10)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",11)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",12)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",13)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",14)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",15)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",16)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",17)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",18)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",19)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",20)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",21)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",22)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",23)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",24)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",25)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",26)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",27)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",28)
+			game:GetService("ReplicatedStorage")["RemoteEventContainer"]["CommunicationF"]:InvokeServer("discardTask",29)
+	end
+ end)
+
+local AutoCollectSystemIndic2 = false
+
+local Toggle = Tabs.AutoFarm:AddToggle("CollectPowers", {Title = "Auto Collect Power Ups", Default = false })
+
+    Toggle:OnChanged(function(State)
+        AutoCollectSystemIndic2 = State
+        
+ workspace.Powerups.ChildAdded:Connect(function(variable)
+   repeat
+      if AutoCollectSystemIndic2 == true and wait(0.1) then
+      for i,v in pairs(variable:GetDescendants()) do
+       	if v:IsA("Part") or v:IsA("BasePart") then
+          	v.CFrame = CFrame.new(Player.Character.Torso.Position + Vector3.new(0, 0, 0.8))
+          	v.Position = Player.Character.Torso.Position + Vector3.new(0, 0, 0.8)
+          	v.CanCollide = false
+	        end
+      	end
+	   end
+	
+	    until AutoCollectSystemIndic2 == false	
+   end)
+end)
+    
+-- Zombie
+
+Tabs.Zombie:AddParagraph({
+        Title = "Zombie ESP",
+        Content = " "
+    })
+
+local ESP = false
+
+local Toggle = Tabs.Zombie:AddToggle("EspZombie", {Title = "Esp Zombie", Default = false })
+
+    Toggle:OnChanged(function(bool)
+ESP = bool
+
+spawn(function()
+    while wait(0.4) do
+        pcall(function()
+            if ESP then
+                for i, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+                    if v:FindFirstChild('HumanoidRootPart') then
+                        local evilHumanoid = v:FindFirstChild("Humanoid")  -- Change "Humanoid" to "EvilHumanoid"
+                        
+                        if not v:FindFirstChild("MobEap") then
+                            local BillboardGui = Instance.new("BillboardGui")
+                            local TextLabel = Instance.new("TextLabel")
+
+                            BillboardGui.Parent = v
+                            BillboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                            BillboardGui.Active = true
+                            BillboardGui.Name = "MobEap"
+                            BillboardGui.AlwaysOnTop = true
+                            BillboardGui.LightInfluence = 1.000
+                            BillboardGui.Size = UDim2.new(0, 200, 0, 50)
+                            BillboardGui.StudsOffset = Vector3.new(0, 2.5, 0)
+
+                            TextLabel.Parent = BillboardGui
+                            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                            TextLabel.BackgroundTransparency = 1.000
+                            TextLabel.Size = UDim2.new(0, 200, 0, 50)
+                            TextLabel.TextScaled = false
+                            TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                            TextLabel.Font = Enum.Font.GothamBold
+                            TextLabel.TextSize = 14  -- Adjust the text size to your preference
+
+                            v.MobEap = BillboardGui  -- Store the BillboardGui in MobEap for later use
+                        end
+
+                        local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude)
+
+                        if evilHumanoid then
+                            local health = math.floor(evilHumanoid.Health)
+                            v.MobEap.TextLabel.Text = v.Name.." - "..distance.." M\nHealth: "..health
+                        else
+                            v.MobEap.TextLabel.Text = v.Name.." - "..distance.." M"
+                        end
+                    end
+                end
+            else
+                for i, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
+                    if v:FindFirstChild("MobEap") then
+                        v.MobEap:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+    end)
+
+    Options.EspZombie:SetValue(false)
+    
+    
+ local ESP2 = false
+ 
+local Toggle = Tabs.Zombie:AddToggle("EspBoss", {Title = "Esp Boss", Default = false })
+
+    Toggle:OnChanged(function(bool)
+        ESP2 = bool
+
+spawn(function()
+    while wait(0.4) do
+        pcall(function()
+            if ESP2 then
+                for i, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+                    if v:FindFirstChild('HumanoidRootPart') then
+                        local evilHumanoid = v:FindFirstChild("Humanoid")  -- Change "Humanoid" to "EvilHumanoid"
+                        
+                        if not v:FindFirstChild("MobEap") then
+                            local BillboardGui = Instance.new("BillboardGui")
+                            local TextLabel = Instance.new("TextLabel")
+
+                            BillboardGui.Parent = v
+                            BillboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                            BillboardGui.Active = true
+                            BillboardGui.Name = "MobEap"
+                            BillboardGui.AlwaysOnTop = true
+                            BillboardGui.LightInfluence = 1.000
+                            BillboardGui.Size = UDim2.new(0, 200, 0, 50)
+                            BillboardGui.StudsOffset = Vector3.new(0, 2.5, 0)
+
+                            TextLabel.Parent = BillboardGui
+                            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                            TextLabel.BackgroundTransparency = 1.000
+                            TextLabel.Size = UDim2.new(0, 200, 0, 50)
+                            TextLabel.TextScaled = false
+                            TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                            TextLabel.Font = Enum.Font.GothamBold
+                            TextLabel.TextSize = 14  -- Adjust the text size to your preference
+
+                            v.MobEap = BillboardGui  -- Store the BillboardGui in MobEap for later use
+                        end
+
+                        local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude)
+
+                        if evilHumanoid then
+                            local health = math.floor(evilHumanoid.Health)
+                            v.MobEap.TextLabel.Text = v.Name.." - "..distance.." M\nHealth: "..health
+                        else
+                            v.MobEap.TextLabel.Text = v.Name.." - "..distance.." M"
+                        end
+                    end
+                end
+            else
+                for i, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
+                    if v:FindFirstChild("MobEap") then
+                        v.MobEap:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end)
+    end)
+
+    Options.EspBoss:SetValue(false)
+
+Tabs.Zombie:AddParagraph({
+        Title = "Zombie Mods",
+        Content = " "
+    })
+
+local targetFolders = {
+    workspace.enemies,
+    workspace.BossFolder
+}
+local mainsize = 7
+local BigHead = false
+
+local Toggle = Tabs.Zombie:AddToggle("BigHead", {Title = "Big Zombie Head", Default = false })
+
+    Toggle:OnChanged(function(value)
+    BigHead = value
+while BigHead and wait(0.2) do
+
+for _, targetFolder in ipairs(targetFolders) do
+    for _, value in pairs(targetFolder:GetDescendants()) do
+        if value:FindFirstChild("Head") or value:FindFirstChild("Torso") then
+            if value.Name ~= game:GetService("Players").LocalPlayer.Name then
+            pcall(function()
+                value.Head.Transparency = 0.7
+                value.Head.CanCollide = false
+                value.Head.Massless = true
+                value.Head.Size = Vector3.new(mainsize, mainsize, mainsize)
+                value.Head.CFrame = value.Torso.CFrame * CFrame.new(0, mainsize/2, 0)
+                end)
+              end
+           end
+         end
+      end
+   end
+end)
+
+    Options.BigHead:SetValue(false)
+    
+local Slider = Tabs.Zombie:AddSlider("HeadSize", {
+        Title = "Head Size",
+        Description = " ",
+        Default = 7,
+        Min = 1,
+        Max = 30,
+        Rounding = 1,
+        Callback = function(Value)
+            mainsize = tonumber(Value) or 1
+        end
+    })
+
+-- Misc
+
+local globalTarget = nil
+local camera = workspace.CurrentCamera
+local Wallcheck = false
+
+_G._ZombieKillPart = "Head"
+local PrimaryPart = "Head"
+_G._ZombieKillPart2 = "HumanoidRootPart"
+
+function KillZombies(weapontype,partaim)
+if weapontype == "gun" then
+game:GetService("ReplicatedStorage").Gun:FireServer({["Normal"] = Vector3.new(0,0,0),["Direction"] = getNearest()[partaim].Position,["Name"] = getEquippedWeapon(game.Players.LocalPlayer),["Hit"] = getNearest()[partaim],["Origin"] = getNearest()[partaim].Position,["Pos"] = getNearest()[partaim].Position})
+elseif weapontype == "melee" then
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(game.Players.LocalPlayer),getNearest()[partaim])
+else
+	return "INVALID WEAPON TYPE"
+end
+end
+
+function NotObstructing(TargetCharacter, ignoreList)
+    if not Wallcheck then
+        return true
+    end
+
+    if TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart") then
+        local rayOrigin = LocalPlayer.Character.HumanoidRootPart.Position
+        local rayDirection = (TargetCharacter.HumanoidRootPart.Position - rayOrigin).unit * 1000
+
+        local raycastParams = RaycastParams.new()
+        raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+        raycastParams.FilterDescendantsInstances = ignoreList
+        raycastParams.IgnoreWater = true
+
+        local raycastResult = workspace:Raycast(rayOrigin, rayDirection, raycastParams)
+        if raycastResult and raycastResult.Instance:IsDescendantOf(TargetCharacter) then
+            return true
+        else
+            return false
+        end
+    end
+
+    return false
+end
+
+
+local function ZombieBehindWall(player)
+    local ray = Ray.new(camera.CFrame.Position, player.Head.Position - camera.CFrame.Position)
+    local hit = game.GetService(game, "Workspace").FindPartOnRayWithWhitelist(game.GetService(game, "Workspace"), ray, {game.GetService(game, "Workspace").enemies})
+    if hit and hit.Parent == player then
+        return false
+    end
+    return true
+end
+
+local function BossBehindWall(player)
+    local ray = Ray.new(camera.CFrame.Position, player.Head.Position - camera.CFrame.Position)
+    local hit = game.GetService(game, "Workspace").FindPartOnRayWithWhitelist(game.GetService(game, "Workspace"), ray, {game.GetService(game, "Workspace").BossFolder})
+    if hit and hit.Parent == player then
+        return false
+    end
+    return true
+end
+
+function getEquippedWeapon(player)
+        local char = player.Character
+        local weapon = char and char:FindFirstChildWhichIsA("Tool")
+    
+        if weapon ~= nil then
+            return weapon.Name
+        else
+            return "None"
+        end
+    end
+    
+ function GetToolName()
+for _,Thing in pairs(game:GetService("ReplicatedStorage").Guns:GetChildren()) do
+   if Thing:IsA("Tool") then
+      return Thing.Name
+   end
+ end
+end
+
+local KnifeName = "Basic Knife"
+local ConfirmSystem = {
+	BulletAura = false,
+	TrackingZombie = false,
+	TrackingBoss = false,
+	Throwing = false
+}
+
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+gmt.__namecall = newcclosure(function(self, ...)
+        local Args = {...}
+        local method = getnamecallmethod()
+       
+        if tostring(self) == "Gun" and tostring(method) == "FireServer" and ConfirmSystem.BulletAura == true then
+		      Args[1]["Normal"] = Vector3.new(0,0,0)
+              Args[1]["Direction"] = getNearest().PrimaryPart.Position
+              Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
+              Args[1]["Hit"] = getNearest().PrimaryPart
+              Args[1]["Origin"] = getNearest().PrimaryPart.Position
+              Args[1]["Pos"] = getNearest().PrimaryPart.Position
+         return self.FireServer(self, unpack(Args))
+    elseif tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and ConfirmSystem.Throwing == true then
+		      Args[2] = KnifeName
+		      Args[3] = getNearest().PrimaryPart
+		    return self.InvokeServer(self, unpack(Args))
+        end
+    return oldNamecall(self, ...)
+end)
+
+local Obfuscatedstr = {}
+function BlacklistedPart()
+workspace.ChildAdded:Connect(function(p)
+if p.Name == "map" then
+for _,map in pairs(p:GetChildren()) do
+	for _,VirtualBlacklisted in pairs(map:GetChildren()) do
+  		 AddTable(VirtualBlacklisted,Obfuscatedstr)
+                end
+            end
+        end
+    end)
+end
+
+local circle = Drawing.new("Circle")
+circle.Color = Color3.new(1, 0, 0)
+circle.Thickness = 2
+circle.Radius = 1000
+circle.Visible = false
+circle.Transparency = 0.2
+circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+
+local function isWithinFOVCircle(vector)
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    local distToCenter = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+    return distToCenter <= circle.Radius
+end
+
+local function ZombieV4()
+    local closestDist = math.huge
+    local closestPlr = nil
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    
+    for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
+        if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) and NotObstructing(v, {game.Players.LocalPlayer.Character}) then
+                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not ZombieBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    return closestPlr
+end
+
+local function BossV4()
+    local closestDist = math.huge
+    local closestPlr = nil
+    local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    
+    for _, v in next, game.GetService(game, "Workspace").BossFolder.GetDescendants(game.GetService(game, "Workspace").BossFolder) do
+        if game.IsA(v, "Model") and game.FindFirstChild(v,"HumanoidRootPart") then
+            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
+            if isWithinFOVCircle(vector) and NotObstructing(v, {game.Players.LocalPlayer.Character}) then
+                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                if dist < closestDist and onScreen and not BossBehindWall(v) then
+                    closestDist = dist
+                    closestPlr = v
+                end
+            end
+        end
+    end
+    
+    return closestPlr
+end
+
+local GunHook;
+GunHook = hookmetamethod(game, "__namecall", function(Self, ...)
+	if not checkcaller() and tostring(getcallingscript()) == "GunController" and string.lower(getnamecallmethod()) == "findpartonraywithwhitelist" then
+		local args = {...}
+		local Tracking = ZombieV4()
+		local Tracking2 = BossV4()
+		
+		if Tracking and ConfirmSystem.TrackingZombie == true then
+		     args[1] = Ray.new(args[1].Origin,Tracking.Head.Position - args[1].Origin,Obfuscatedstr)
+    	end
+    
+        if Tracking2 and ConfirmSystem.TrackingBoss == true then
+            args[1] = Ray.new(args[1].Origin,Tracking2.Head.Position - args[1].Origin,Obfuscatedstr)
+        end
+       
+	     	return GunHook(Self, unpack(args))
+     	end	
+	return GunHook(Self, ...)
+end)
+
+local nearesthead = targetFolders
+
+function silentaim()
+if _G._userGun == true and getNearest() then
+game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
+else
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position})
+end
+end
+
+function testCframeOrigin()
+game.ReplicatedStorage.Gun:FireServer({["Normal"] = CFrame.new(0, 0, 0), ["Direction"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position), ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position), ["Pos"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position)})
+end
+
+Tabs.Misc:AddParagraph({
+        Title = "Malicious Features",
+        Content = " "
+    })
+
+Tabs.Misc:AddButton({
+        Title = "Equip All Guns",
+        Description = "",
+        Callback = function()
+for _,Thing in pairs(game.ReplicatedStorage.Guns:GetChildren()) do
+if Thing:IsA("Tool") then
+Thing.Parent = game.Players.LocalPlayer.Backpack
+end
+end            
+        end
+    })
+    
+Tabs.Misc:AddButton({
+        Title = "Equip All Knife",
+        Description = "",
+        Callback = function()
+for _,Thing in pairs(game.ReplicatedStorage.Knives:GetChildren()) do
+if Thing:IsA("Tool") then
+Thing.Parent = game.Players.LocalPlayer.Backpack
+end
+end
+        end
+    })
+
+Tabs.Misc:AddButton({
+        Title = "Fast Fire",
+        Description = "(Laggy)",
+        Callback = function()
+for i, v in pairs(getgc(true)) do
+     if type(v) == 'table' and rawget(v, 'BulletPerShot') then
+       v.Damage = -9999
+       v.BulletPerShot = 20
+       v.Firerate = 20
+       v.Length = 10000
+       v.Spread = {
+          Min = 0,
+  		Rec = 0,
+  		Inc = 0,
+	  	Max = 0
+       }
+      end
+end
+        end
+    })
+ 
+ Tabs.Misc:AddParagraph({
+        Title = " ",
+        Content = "Tutorial: Equip the Knife to equipping other guns"
+    })
+ 
+function RemoveDuplicateKnives()
+    local Player = game.Players.LocalPlayer
+    local backpack = Player.Backpack
+    local knifeNames = GetKnivesName()
+    local toolCount = {}
+
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") and tool.Name and table.find(knifeNames, tool.Name) then
+            if toolCount[tool.Name] then
+                toolCount[tool.Name] = toolCount[tool.Name] + 1
+            else
+                toolCount[tool.Name] = 1
+            end
+        end
+    end
+
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") and tool.Name and toolCount[tool.Name] and toolCount[tool.Name] > 1 then
+            tool:Destroy()
+            toolCount[tool.Name] = toolCount[tool.Name] - 1
+        end
+    end
+end
+
+local weaponList = {}
+
+function FEEquipingGuns()
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
+    local equippedGuns = {}
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") then
+            table.insert(equippedGuns, tool.Name)
+        end
+    end
+    
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            table.insert(equippedGuns, tool.Name)
+        end
+    end
+
+    for _, gunName in pairs(weaponList) do
+        if not table.find(equippedGuns, gunName) then
+            game:GetService("ReplicatedStorage").RemoteEventContainer.CommunicationF:InvokeServer("EquipItem", gunName)
+            wait(2)
+
+            table.insert(equippedGuns, gunName)
+        end
+    end
+
+    if #equippedGuns >= #weaponList then
+        return
+    end
+end
+
+function DupeSomethin()
+    local allGunsEquipped = true
+    local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+    local backpack = game.Players.LocalPlayer.Backpack
+
+    local equippedTools = {}
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") then
+            table.insert(equippedTools, tool.Name)
+        end
+    end
+    for _, tool in pairs(backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            table.insert(equippedTools, tool.Name)
+        end
+    end
+
+    for _, gunName in pairs(weaponList) do
+        if not table.find(equippedTools, gunName) then
+            allGunsEquipped = false
+         else
+            allGunsEquipped = true
+        end
+    end
+
+    if allGunsEquipped then
+        return
+    end
+
+    spawn(EquipGun)
+    spawn(EquipKnives)
+    spawn(RemoveDuplicateKnives)
+end
+
+
+function RealFastFire()
+for i, v in pairs(getgc(true)) do
+     if type(v) == 'table' and rawget(v, "bullets_per_shot") then
+       v["bullets_per_shot"] = 13
+       v.Spread = {
+          Min = 0,
+  		Rec = 0,
+  		Inc = 0,
+	  	Max = 0
+       }
+      end
+end
+end
+
+local Uhhhhhhhh = false
+
+ local Toggle = Tabs.Misc:AddToggle("ServerSidedEquipper", {Title = "Equip Multiple Guns", Default = false })
+
+    Toggle:OnChanged(function(nastyAh)
+    Uhhhhhhhh = nastyAh
+    
+   while Uhhhhhhhh and wait(2) do
+          spawn(DupeSomethin)
+          spawn(FEEquipingGuns)
+       end
+    end)
+    
+ local MultiDropdown = Tabs.Misc:AddDropdown("SelectedEquipGuns", {
+    Title = "Select A Gun to Equip in ServerSided",
+    Description = "4-6 guns Maximum otherwise it will disappear",
+    Values = GetGunsName(),
+    Multi = true,
+    Default = {"Machine Gun"},
+})
+
+MultiDropdown:OnChanged(function(selectedValues)
+    weaponList = {}
+
+    for gunName, state in pairs(selectedValues) do
+        if state then
+            table.insert(weaponList, gunName)
+        end
+    end
+end)
+
+Tabs.Misc:AddParagraph({
+        Title = "Silent Aim",
+        Content = " "
+    })
+    
+ local Toggle = Tabs.Misc:AddToggle("FovCircle", {Title = "Show FOV Circle", Default = false})
+
+Toggle:OnChanged(function(tgcircle)
+    circle.Visible = tgcircle
+end)
+
+local Toggle = Tabs.Misc:AddToggle("Wallcheck", {Title = "Wall Check", Default = false})
+
+Toggle:OnChanged(function(tgwallcheco)
+    Wallcheck = tgwallcheco
+end)
+
+local Slider = Tabs.Misc:AddSlider("CircleRadius", {
+    Title = "Circle Radius",
+    Description = "",
+    Default = 250,
+    Min = 0,
+    Max = 1000,
+    Rounding = 0,
+    Callback = function(CircleSize)
+        circle.Radius = CircleSize 
+    end
+})
+
+Tabs.Misc:AddParagraph({
+        Title = " ",
+        Content = ""
+    })
+
+ BlacklistedPart()
+
+ local Toggle = Tabs.Misc:AddToggle("SilentAimZombies", {Title = "Silent Aim Zombies", Default = false })
+
+    Toggle:OnChanged(function(bool1)
+    ConfirmSystem.TrackingZombie = bool1
+    end)
+
+local Toggle = Tabs.Misc:AddToggle("SilentAimBosses", {Title = "Silent Aim Bosses", Default = false })
+
+    Toggle:OnChanged(function(bool10)    
+    ConfirmSystem.TrackingBoss = bool10
+end)
+
+Tabs.Misc:AddParagraph({
+        Title = "Aimbot",
+        Content = " "
+    })
+ 
+ local Toggle = Tabs.Misc:AddToggle("AimbotZombies", {Title = "Aimbot Zombies", Default = false})
+
+Toggle:OnChanged(function(Amb1)
+    AimbotZombies = Amb1
+
+    while AimbotZombies and wait() do
+        local target = ZombieV4()
+        if target and NotObstructing(target, {game.Players.LocalPlayer.Character}) then
+            local camera = game:GetService("Workspace").CurrentCamera
+            local targetPosition = target[PrimaryPart].Position + Vector3.new(0, -1, 0)
+            camera.CFrame = CFrame.new(camera.CFrame.p, targetPosition)
+        end
+    end
+end)
+
+local Toggle = Tabs.Misc:AddToggle("AimbotBosses", {Title = "Aimbot Bosses", Default = false})
+
+Toggle:OnChanged(function(Amb2)
+    AimbotBosses = Amb2
+
+    while AimbotBosses and wait() do
+        local target = BossV4()
+        if target and NotObstructing(target, {game.Players.LocalPlayer.Character}) then
+            local camera = game:GetService("Workspace").CurrentCamera
+            local targetPosition = target[PrimaryPart].Position + Vector3.new(0, -1, 0)
+            camera.CFrame = CFrame.new(camera.CFrame.p, targetPosition)
+        end
+    end
+end)
+ 
+Tabs.Misc:AddParagraph({
+        Title = "Gun Mods",
+        Content = " "
+    })
+    
+local BulletAuraV1 = false
+
+local Toggle = Tabs.Misc:AddToggle("BulletAuraV1", {Title = "Bullet Aura V1", Default = false })
+
+    Toggle:OnChanged(function(bool3)
+        BulletAuraV1 = bool3
+
+        while BulletAuraV1 and wait() do
+           spawn(silentaim)
+           spawn(testCframeOrigin)
+           spawn(testVectorOrigin)
+        end
+    end)
+
+    
+local Toggle = Tabs.Misc:AddToggle("BulletAuraV2", {Title = "Bullet Aura V2", Default = false })
+
+    Toggle:OnChanged(function(bool3)
+    ConfirmSystem.BulletAura = bool3
+    end)
+ 
+Tabs.Misc:AddParagraph({
+        Title = "Knife Mods",
+        Content = ""
+    })
+    
+local KillAura = false
+local SizeHandle = 20
+   
+local Toggle = Tabs.Misc:AddToggle("KillAuraTG", {Title = "Kill Aura", Default = false })
+
+    Toggle:OnChanged(function(bool11)
+    KillAura = bool11
+ 
+while KillAura and wait(0.1) do
+spawn(function()
+local player = game.Players.LocalPlayer
+local backpack = player.Backpack or player.Character
+local basicKnife = backpack:FindFirstChild(KnifeName)
+local handle = basicKnife:FindFirstChild("Handle")
+local getBox = handle:FindFirstChild("SelectionBox")
+
+if basicKnife and handle then
+    handle.Size = Vector3.new(SizeHandle, 1, SizeHandle)
+    handle.CanCollide = false
+    handle.Massless = true 
+    KillZombies("melee",_G._ZombieKillPart)
+
+if not getBox then
+    local selectionBox = Instance.new("SelectionBox", handle)
+    selectionBox.Adornee = handle
+    selectionBox.Color3 = Color3.new(1, 0, 0)
+end
+
+         end
+      end)
+   end
+end)
+
+local Input = Tabs.Misc:AddInput("KnifeName", {
+    Title = "Knife Name",
+    Default = "Basic Knife",
+    Placeholder = "Please Put a Knife Name",
+    Numeric = false, -- Only allows numbers
+    Finished = false, -- Only calls callback when you press enter
+    Callback = function(Value)
+        KnifeName = tostring(Value) or "Basic Knife"
+    end
+})
+
+local Slider = Tabs.Misc:AddSlider("KnifeRange", {
+    Title = "Kill Aura Range",
+    Description = "",
+    Default = 20,
+    Min = 0,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(Value)
+        SizeHandle = tonumber(Value) or 20
+    end
+})
+
+-- Settings
+
+Tabs.Settings:AddParagraph({
+        Title = "Save Config",
+        Content = " "
+    })
+
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:SetIgnoreIndexes({})
+
+-- Save Folder
+InterfaceManager:SetFolder("UnknownHubXUniversal")
+SaveManager:SetFolder("UnknownHubXUniversal/Evade")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+
+-- Auto Load Configuration
+SaveManager:LoadAutoloadConfig()
