@@ -228,23 +228,7 @@ local function saveKeyToFile(key)
 end
 
 local function runloadstring()
-    local getsc = "https://raw.githubusercontent.com/D-3339/FFCCVVdAodh--/refs/heads/G-999H/F-Gvxcpha-%7B%7D/Zmas-%7B%7D"
-
-    function loadme(load)
-        local success, result = pcall(game.HttpGet, game, load)
-        if success then
-            local func, err = loadstring(result)
-            if func then
-                func()
-            else
-                warn("Failed to load")
-            end
-        else
-            warn("Failed to load")
-        end
-    end
-
-    loadme(getsc)
+  loadstring(game:HttpGet('https://raw.githubusercontent.com/D-3339/FFCCVVdAodh--/refs/heads/G-999H/F-Gvxcpha-%7B%7D/Zmas-%7B%7D'))()
 end
 
 local playergui = game:GetService("Players").LocalPlayer.PlayerGui or game.Players.LocalPlayer.PlayerGui
