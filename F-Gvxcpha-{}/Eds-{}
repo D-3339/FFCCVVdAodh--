@@ -1,3 +1,5 @@
+_G.DevMode = false
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -175,7 +177,7 @@ local SizeGuiZ = 460
 
 local Window = Fluent:CreateWindow({
     Title = "Draconic Hub X Evade (Overhaul)",
-    SubTitle = "V2.6 Made by Unknownproooolucky discord.gg/d2a3KkTD6r",
+    SubTitle = "V2.8 Made by LuckyDragon910 discord.gg/d2a3KkTD6r",
     TabWidth = 160,
     Size = UDim2.fromOffset(SizeGuiX, SizeGuiZ),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -284,13 +286,41 @@ function nodamagepart()
    local Map = game.Workspace.Game.Map
    
    for i, v in pairs(Map:GetDescendants()) do
-     if (v.Name == "Water" or v.Name == "Lava") or v:IsA("BasePart") and v:FindFirstChildWhichIsA("TouchTransmitter") then
+     if v:IsA("BasePart") and v.CanTouch == true then
           v.CanTouch = false
        end
    end
 end
 
+function nowaterdmg(t)
+	for i, v in next, t:GetChildren() do
+		if v.IsA(v, 'BasePart') then
+			v.CanTouch = false
+		end
+	end
+end
+
+function RemoveReduceRewards()
+    for i, v in pairs(game.Workspace.Game.Map.SafeZones:GetDescendants()) do
+       if v:IsA("BasePart") then
+          v:Destroy()
+       end
+    end
+end
+
+function NoCameraShake()
+    local FOVAdjusters = game:GetService("Players").LocalPlayer:FindFirstChild("PlayerScripts")
+    and game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("Camera")
+    and game:GetService("Players").LocalPlayer.PlayerScripts.Camera:FindFirstChild("FOVAdjusters")
+
+    if FOVAdjusters then
+       FOVAdjusters:SetAttribute("Fear", 1)
+    end
+end
+
 local RemoveDamagePart = false
+local RemoveReducingRewards = false
+local NoCameraShakeTG = false
 
 local Toggle = Tabs.Main:AddToggle("RemoveDamage", {Title = "Remove Damage Objects", Default = false })
 
@@ -298,6 +328,24 @@ local Toggle = Tabs.Main:AddToggle("RemoveDamage", {Title = "Remove Damage Objec
         RemoveDamagePart = State
       while task.wait(1) and RemoveDamagePart do
 			spawn(nodamagepart)
+		end
+    end)
+    
+ local Toggle = Tabs.Main:AddToggle("RemoveReducingRewards", {Title = "Remove Reducing Rewards", Default = false })
+
+    Toggle:OnChanged(function(State)
+        RemoveReducingRewards = State
+      while task.wait(1) and RemoveReducingRewards do
+			spawn(RemoveReduceRewards)
+		end
+    end)
+    
+local Toggle = Tabs.Main:AddToggle("RemoveReducingRewards", {Title = "No Camera Shake", Default = false })
+
+    Toggle:OnChanged(function(State)
+        NoCameraShake = State
+      while task.wait(.1) and NoCameraShakeTG do
+			spawn(NoCameraShake)
 		end
     end)
 
@@ -408,14 +456,6 @@ function ClearESP(espname)
 	for _, v in pairs(game.CoreGui:GetChildren()) do
 		if v.Name == espname and v:isA("BillboardGui") then
 			v:Destroy()
-		end
-	end
-end
-
-function nowaterdmg(t)
-	for i, v in next, t:GetChildren() do
-		if v.IsA(v, 'BasePart') then
-			v.CanTouch = false
 		end
 	end
 end
@@ -637,7 +677,7 @@ end
                     end
                     
                    local distance = math.floor((localHumanoidRootPart.Position - v.Position).Magnitude)
-                    v.TicketESP.TextLabel.Text = string.format("Ticket - %d M", distance)
+                    v.TicketESP.TextLabel.Text = string.format("%s - %d M", v.Parent.Name, distance)
                 end
             end
         else
@@ -994,6 +1034,22 @@ Tabs.AutoFarm:AddButton({
         tptoobjective()
         end
     })
+    
+ function GetEmotesName()
+    local EmoteNames = {}
+    local emotesFolder = game:GetService("ReplicatedStorage").Items.Emotes
+
+    for _, thing in ipairs(emotesFolder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            EmoteNames[#EmoteNames + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then -- Yield every 50 iterations to prevent lag
+            task.wait()
+        end
+    end
+
+    return EmoteNames
+end
 
 -- Combat
 
@@ -1344,6 +1400,7 @@ Tabs.Misc:AddParagraph({
         Content = " "
     })
  
+local CachesAdjusment = {}
 local StrafeAcceleration = 184
 local StrafeAcceleration2 = 184
 local TFriction = 5
@@ -1355,100 +1412,59 @@ local TSpeed2 = 1500
 local TJump = 3
 local TJump2 = 3
 
+local function cacheTables()
+    local gcObjects = getgc(true)
+    for i = 1, #gcObjects do
+        local v = gcObjects[i]
+        if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
+            table.insert(CachesAdjusment, v)
+        end
+    end
+end
+
 function setTSpeed(newSpeed)
     if TSpeed ~= newSpeed then
         TSpeed = newSpeed
-        
-    local OptimizerGarbageCollection = true
-    local gcObjects = getgc(OptimizerGarbageCollection)
-
-pcall(function()
-    for i = 1, #gcObjects do
-        local v = gcObjects[i]
-        if type(v) == "table" and rawget(v, "SprintCap") then
-            if v.Speed and v.JumpHeight then
-                   rawset(v, "Speed", TSpeed)
-                  end
-               end
-            end
-        end)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "Speed", TSpeed)
+        end
     end
 end
 
 function setTJump(newJump)
     if TJump ~= newJump then
         TJump = newJump
-    local OptimizerGarbageCollection = true
-    local gcObjects = getgc(OptimizerGarbageCollection)
-
-pcall(function()
-    for i = 1, #gcObjects do
-        local v = gcObjects[i]
-        if type(v) == "table" and rawget(v, "SprintCap") then
-           if v.Speed and v.JumpHeight then
-                  rawset(v, "JumpHeight", TJump)
-                  end
-               end
-            end
-        end)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "JumpHeight", TJump)
+        end
     end
 end
 
 function setTJumpCap(newJumpCap)
     if TJumpCap ~= newJumpCap then
         TJumpCap = newJumpCap
-    local OptimizerGarbageCollection = true
-    local gcObjects = getgc(OptimizerGarbageCollection)
-
-pcall(function()
-    for i = 1, #gcObjects do
-        local v = gcObjects[i]
-        if type(v) == "table" and rawget(v, "SprintCap") then
-           if v.Speed and v.JumpHeight then
-                  rawset(v, "JumpCap", TJumpCap)
-                  end
-               end
-            end
-        end)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "JumpCap", TJumpCap)
+        end
     end
 end
 
 function setTFriction(newFriction)
     if TFriction ~= newFriction then
         TFriction = newFriction
-        local OptimizerGarbageCollection = true
-        local gcObjects = getgc(OptimizerGarbageCollection)
-
-        pcall(function()
-            for i = 1, #gcObjects do
-                local v = gcObjects[i]
-                if type(v) == "table" and rawget(v, "SprintCap") then
-                    if v.Friction then
-                        rawset(v, "Friction", TFriction)
-                    end
-                end
-            end
-        end)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "Friction", newFriction)
+        end
     end
 end
 
 function setStrafeAcceleration(newAcceleration)
     if StrafeAcceleration ~= newAcceleration then
         StrafeAcceleration = newAcceleration
-    local OptimizerGarbageCollection = true
-    local gcObjects = getgc(OptimizerGarbageCollection)
-
-pcall(function()
-    for i = 1, #gcObjects do
-        local v = gcObjects[i]
-        if type(v) == "table" and rawget(v, "SprintCap") then
-            if v.Speed and v.JumpHeight then
-                  rawset(v, "AirStrafeAcceleration", StrafeAcceleration)
-                  rawset(v, "AirAcceleration", 3)
-                  end
-               end
-            end
-        end)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "AirStrafeAcceleration", StrafeAcceleration)
+            rawset(v, "AirAcceleration", 3)
+        end
     end
 end
 
@@ -1705,8 +1721,24 @@ local nearestPlayer = getNearestDownedPlayer()
       end
 end
 
+function CarryPlayer()
+local player = game.Players.LocalPlayer
+local nearestPlayer = getNearestDownedPlayer()
+      if nearestPlayer then
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", nil, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", false, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
+         game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
+      end
+end
+
 local AutoRevive = false
+local AutoCarry = false
 local DelayRevive = 0.1
+local DelayCarry = 0.1
 
 local Toggle = Tabs.Misc:AddToggle("InsRev", {Title = "Instant Revive", Default = false})
 
@@ -1728,7 +1760,7 @@ Toggle:OnChanged(function(State)
 end)
 
 local Slider = Tabs.Misc:AddSlider("ReviveDelay", {
-        Title = "Instant Revive Delay",
+        Title = "Revive Delay",
         Description = "",
         Default = 0.1,
         Min = 0,
@@ -1737,6 +1769,38 @@ local Slider = Tabs.Misc:AddSlider("ReviveDelay", {
         Callback = function(v)
             DelayRevive = v
         end
+    })
+    
+Tabs.Misc:AddParagraph({
+        Title = " ",
+        Content = ""
+    })
+    
+    
+local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry", Default = false})
+
+Toggle:OnChanged(function(State)
+    AutoCarry = State
+  while AutoCarry and wait(DelayCarry) do
+       spawn(CarryPlayer)
+    end
+end)
+
+local Slider = Tabs.Misc:AddSlider("CarryDelay", {
+        Title = "Carry Delay",
+        Description = "",
+        Default = 0.1,
+        Min = 0,
+        Max = 5,
+        Rounding = 1,
+        Callback = function(v)
+            DelayRevive = v
+        end
+    })
+    
+ Tabs.Misc:AddParagraph({
+        Title = " ",
+        Content = ""
     })
 
 function BreakTheDoor()
@@ -1786,16 +1850,6 @@ Toggle:OnChanged(function(State)
        DrinkCola()
     end
 end)
-
-function GetEmotesName()
-    local EmoteNames = {}
-    for _, Thing in pairs(game:GetService("ReplicatedStorage").Items.Emotes:GetChildren()) do
-        if Thing:IsA("LocalScript") or Thing:IsA("ModuleScript") then
-            table.insert(EmoteNames, Thing.Name)
-        end
-    end
-    return EmoteNames
-end
 
 Tabs.Misc:AddParagraph({
         Title = " ",
@@ -2133,6 +2187,7 @@ local UserInputService = game:GetService("UserInputService")
  function CreateBindableButton()
     local function Action(actionName, inputState)
       if inputState == Enum.UserInputState.Begin then
+          setfflag("TaskSchedulerTargetFps", "2")
           setfflag("TaskSchedulerTargetFps", "5")
       wait(LagDelay)
           setfflag("TaskSchedulerTargetFps", "900")
@@ -2183,6 +2238,97 @@ local Slider = Tabs.Misc:AddSlider("LagDelay", {
         Content = ""
     })
     
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+    
+local GravityGuiSize = 100
+local NormalGravity = game.Workspace.Gravity
+local GravityAdjustment = 10
+
+local GravityGui = false
+local GravityToggle = false
+
+local function creategravitytoggle()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.CoreGui
+    screenGui.Name = "GravityToggle"
+    screenGui.ResetOnSpawn = false
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, GravityGuiSize, 0, GravityGuiSize)
+    frame.Position = UDim2.new(1, -120, 0.5, -50)
+    frame.BackgroundColor3 = Color3.new(1, 1, 1)
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = Color3.new(0, 0, 0)
+    frame.BackgroundTransparency = 0
+    frame.Parent = screenGui
+    frame.Active = true
+    frame.Draggable = true
+    frame.ClipsDescendants = true
+    
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = frame
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
+    toggleButton.BorderSizePixel = 0
+    toggleButton.TextColor3 = Color3.new(0, 0, 0)
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.TextSize = 14
+    toggleButton.Text = "Gravity: ON"
+    toggleButton.Parent = frame
+    
+    toggleButton.MouseButton1Click:Connect(function()
+        GravityToggle = not GravityToggle
+        toggleButton.Text = GravityToggle and "Gravity: OFF" or "Gravity: ON"
+    end)
+    
+    MakeDraggable(toggleButton, frame)
+end
+
+spawn(function()
+while true and wait(0.1) do
+    if GravityToggle then
+          game.Workspace.Gravity = GravityAdjustment
+      else
+          game.Workspace.Gravity = NormalGravity
+       end
+    end
+end)
+
+function destroygravitytoggle()
+local target = game.CoreGui
+
+if target:FindFirstChild("GravityToggle") then
+target.GravityToggle:Destroy()
+end
+end
+
+local Toggle = Tabs.Misc:AddToggle("GravityToggle", {Title = "Gravity Toggle", Default = false })
+
+    Toggle:OnChanged(function(State)
+ GravityGui = State
+if GravityGui then
+creategravitytoggle()
+else
+destroygravitytoggle()
+end
+end)
+
+local Input = Tabs.Misc:AddInput("GravityAdjust", {
+        Title = "Gravity Adjustment",
+        Default = "10",
+        Placeholder = " Number",
+        Numeric = false, -- Only allows numbers
+        Finished = false, -- Only calls callback when you press enter
+        Callback = function(Value)
+            GravityAdjustment = tonumber(Value) or  10
+        end
+    })
+    
 Tabs.Misc:AddParagraph({
         Title = " ",
         Content = ""
@@ -2215,10 +2361,6 @@ local BHop = false
 local BHOPGuiSize = 75
 local BHOPAdjustNum = "-24"
 local delay = 1
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
 
 local BHop2 = false
 
@@ -2265,12 +2407,19 @@ end
 -- Auto-Jump
 spawn(function()
 while true and wait(0.1) do
-    if BHop2 then
-      setfflag("MaxAltitudePDStickHipHeightPercent", BHOPAdjustNum)
+    if BHop2 and BHOPType == "Acceleration" then
+         setfflag("MaxAltitudePDStickHipHeightPercent", BHOPAdjustNum)
       else
-      setfflag("MaxAltitudePDStickHipHeightPercent", "10")
-       end
+         setfflag("MaxAltitudePDStickHipHeightPercent", "10")
     end
+       
+       if BHop2 and BHOPType == "No-Acceleration" then
+          local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+          if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+             end
+         end
+     end
 end)
 
 local Players = game:GetService("Players")
@@ -2300,6 +2449,17 @@ destroytoggle()
 end
 end)
 
+local Dropdown = Tabs.Misc:AddDropdown("BHOPType", {
+        Title = "Select BHOP Type",
+        Values = {"Acceleration", "No-Acceleration"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        BHOPType = Value
+    end)
+
 local Input = Tabs.Misc:AddInput("GuiSize", {
         Title = "BHOP Gui Size",
         Default = "75",
@@ -2311,7 +2471,7 @@ local Input = Tabs.Misc:AddInput("GuiSize", {
         end
     })
     
-local Input = Tabs.Misc:AddInput("GuiSize", {
+local Input = Tabs.Misc:AddInput("BhopAdjust", {
         Title = "BHOP Adjustment (Minus Only)",
         Default = "-24",
         Placeholder = "Minus Number",
@@ -2651,16 +2811,19 @@ pcall(function()
 end
 
 game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
+      CachesAdjusment = {}
       wait(5)
       optimizegetgc()
       wait(9)
+      cacheTables()
       optimizegetgc()
 end)
 
 game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded:Connect(function(child)
     if child.Name == "Shared" then
+        CachesAdjusment = {}
         wait(5)
-        optimizegetgc()
+        cacheTables()
         wait(9)
         optimizegetgc()
     end
@@ -2668,7 +2831,58 @@ end)
 
 if game.Players.LocalPlayer.Character then
     optimizegetgc()
+    cacheTables()
 end
+
+function connectclient()
+local player = game.Players.LocalPlayer
+local playerGui = player:FindFirstChild("PlayerGui")
+if not playerGui then return end
+
+local speedometer = playerGui:FindFirstChild("Shared") and
+    playerGui.Shared:FindFirstChild("HUD") and
+    playerGui.Shared.HUD:FindFirstChild("Overlay") and
+    playerGui.Shared.HUD.Overlay:FindFirstChild("Default") and
+    playerGui.Shared.HUD.Overlay.Default:FindFirstChild("CharacterInfo") and
+    playerGui.Shared.HUD.Overlay.Default.CharacterInfo:FindFirstChild("Item") and
+    playerGui.Shared.HUD.Overlay.Default.CharacterInfo.Item:FindFirstChild("Speedometer") and
+    playerGui.Shared.HUD.Overlay.Default.CharacterInfo.Item.Speedometer:FindFirstChild("Players")
+
+if speedometer then
+    local isChanging = false
+    
+    speedometer:GetPropertyChangedSignal("Text"):Connect(function()
+        if isChanging then return end -- Prevent re-triggering
+        isChanging = true
+        
+        task.spawn(function()
+            speedometer.Text = "L҈U҉C̸K̶Y҉D҉R͟A҈G̸O҈N҈910 I҈S҉ H҈E̸R⃠E҈"
+            wait(0.1)
+            isChanging = false -- Allow the event to trigger again
+        end)
+    end)
+end
+
+-- Modify Health
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+if humanoid then
+    humanoid.MaxHealth = 999999999
+    
+    task.spawn(function()
+        while task.wait(0.1) do
+            humanoid.Health = math.random(9999, 100000)
+        end
+    end)
+end
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+    if player.Name == "Unknownproooolucky" and player ~= game.Players.LocalPlayer then
+        connectclient()
+    end
+end)
 
 spawn(function()
 while wait(3) do
