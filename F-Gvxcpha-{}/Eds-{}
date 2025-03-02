@@ -197,13 +197,6 @@ local Tabs = {
 
 local Options = Fluent.Options
 
-Fluent:Notify({
-           Title = "Gift Event is now ended",
-            Content = "Gift: Rockin Stride Emote",
-            SubContent = "Gifted by vyznix_1 (Co-Owner)", -- Optional
-            Duration = 15
-        })
-
 -- Main
 
 local Players = game:GetService("Players")
