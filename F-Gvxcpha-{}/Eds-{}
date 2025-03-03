@@ -177,7 +177,7 @@ local SizeGuiZ = 460
 
 local Window = Fluent:CreateWindow({
     Title = "Draconic Hub X Evade (Overhaul)",
-    SubTitle = "V2.8 Made by Unknownproooolucky discord.gg/d2a3KkTD6r",
+    SubTitle = "V2.8 Made by LuckyDragon910 discord.gg/d2a3KkTD6r",
     TabWidth = 160,
     Size = UDim2.fromOffset(SizeGuiX, SizeGuiZ),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -344,7 +344,14 @@ local Toggle = Tabs.Main:AddToggle("RemoveReducingRewards", {Title = "No Camera 
 
     Toggle:OnChanged(function(State)
         NoCameraShakeTG = State
-      while task.wait(.1) and NoCameraShakeTG do
+        
+        game:GetService("Players").LocalPlayer.PlayerScripts.Camera:FindFirstChild("FOVAdjusters"):GetAttributeChangedSignal("Fear"):Connect(function()
+          if NoCameraShakeTG then
+              spawn(NoCameraShake)
+            end
+         end)		
+         
+      while task.wait(0.01) and NoCameraShakeTG do
 			spawn(NoCameraShake)
 		end
     end)
@@ -1051,6 +1058,175 @@ Tabs.AutoFarm:AddButton({
     return EmoteNames
 end
 
+if _G.DevMode == true then
+
+function GetCosmeticName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then 
+            task.wait()
+        end
+    end
+
+    return Names
+end
+    
+ function GetLoadoutName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Loadout
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then
+            task.wait()
+        end
+    end
+
+    return Names
+end
+
+function GetPerksName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Perks
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then 
+            task.wait()
+        end
+    end
+
+    return Names
+end
+
+local SelectedBuyEmote = ""
+local SelectedBuyPerks = ""
+local SelectedBuyLoadout = ""
+local SelectedBuyCosmetic = ""
+    
+ Tabs.AutoFarm:AddParagraph({
+        Title = "Purchase Shortcut",
+        Content = "WARNING: it can waste your tokens/points/tickets"
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown1", {
+    Title = "Select Loadout",
+    Values = GetLoadoutName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyLoadout = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Loadout",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Loadout
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyLoadout and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown2", {
+    Title = "Select Emote",
+    Values = GetEmotesName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyEmote = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Emote",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Emotes
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyEmote and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown3", {
+    Title = "Select Cosmetic",
+    Values = GetCosmeticName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyCosmetic = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Cosmetic",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyCosmetic and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown4", {
+    Title = "Select Perks",
+    Values = GetPerksName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyPerks = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Perks",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Perks
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyPerks and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+    
+end
 
 -- Combat
 
@@ -1741,7 +1917,6 @@ local LocalPlayer = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 
 local AutoRevive = false
-local AutoCarry = false
 local AutoCarryGui = false
 local DelayRevive = 0.1
 
@@ -1782,6 +1957,7 @@ Tabs.Misc:AddParagraph({
     })
     
 local CarryGuiSize = 100
+local AutoCarryPlayer = false
 
 local function createcarrytoggle()
     local screenGui = Instance.new("ScreenGui")
@@ -1816,12 +1992,20 @@ local function createcarrytoggle()
     toggleButton.Parent = frame
     
     toggleButton.MouseButton1Click:Connect(function()
-        AutoCarry = not AutoCarry
-        toggleButton.Text = AutoCarry and "Auto Carry: ON" or "Auto Carry: OFF"
+        AutoCarryPlayer = not AutoCarryPlayer
+        toggleButton.Text = AutoCarryPlayer and "Auto Carry: ON" or "Auto Carry: OFF"
     end)
     
     MakeDraggable(toggleButton, frame)
 end
+
+spawn(function()
+    while true and wait(0.1) do
+      if AutoCarryPlayer then
+          spawn(CarryPlayer)
+       end
+    end
+end)
 
 function destroycarrytoggle()
 local target = game.CoreGui
@@ -1841,12 +2025,6 @@ Toggle:OnChanged(function(State)
      else
         destroycarrytoggle()
      end
-end)
-
-spawn(function()
-    while AutoCarry and wait(0.1) do
-       spawn(CarryPlayer)
-    end
 end)
     
  Tabs.Misc:AddParagraph({
@@ -2927,11 +3105,17 @@ if humanoid then
     end)
 end
 
+if game.Players.LocalPlayer.Character then
 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+end
+
 local sayMessageRequest = game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest")
 sayMessageRequest:FireServer("X: Oh no im lagging :(", "All")
 wait(10)
+
+if game.Players.LocalPlayer.Character then
 game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+end
 
       Fluent:Notify({
            Title = "Congratulations",
