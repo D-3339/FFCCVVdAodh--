@@ -1956,7 +1956,7 @@ Tabs.Misc:AddParagraph({
         Content = ""
     })
     
-local CarryGuiSize = 100
+local CarryGuiSize = 1
 local AutoCarryPlayer = false
 
 local function createcarrytoggle()
