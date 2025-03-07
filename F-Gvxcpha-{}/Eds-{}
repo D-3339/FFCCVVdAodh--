@@ -2015,7 +2015,7 @@ target.AutoCarryToggle:Destroy()
 end
 end
     
-local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry (I'll remove this later)", Default = false})
+local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry", Default = false})
 
 Toggle:OnChanged(function(State)
     AutoCarryGui = State
