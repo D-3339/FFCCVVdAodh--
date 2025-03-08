@@ -641,6 +641,18 @@ function EquipKnives()
     end
 end
 
+function UnequipTools()
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    local backpack = player.Backpack
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") then
+            tool.Parent = backpack
+        end
+    end
+end
+
 function tweenfunction(coordination)
 	TweenService:Create(game.Players.LocalPlayer.Character.HumanoidRootPart, TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out,0,false,0), {CFrame = coordination}):Play()
 end
@@ -1555,7 +1567,8 @@ function DupeSomethin()
     if equippedCount >= totalGuns then
         return
     end
-
+    
+    spawn(UnequipTools)
     spawn(EquipKnives)
     task.wait(0.1)
     spawn(EquipGuns)
