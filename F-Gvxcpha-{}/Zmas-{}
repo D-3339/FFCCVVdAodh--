@@ -649,6 +649,7 @@ function UnequipTools()
     for _, tool in pairs(character:GetChildren()) do
         if tool:IsA("Tool") then
             tool.Parent = backpack
+            task.wait(0.1)
         end
     end
 end
@@ -1569,6 +1570,7 @@ function DupeSomethin()
     end
     
     spawn(UnequipTools)
+    task.wait(0.1)
     spawn(EquipKnives)
     task.wait(0.1)
     spawn(EquipGuns)
