@@ -1575,10 +1575,6 @@ local Toggle = Tabs.Misc:AddToggle("ServerSidedEquipper", {Title = "Equip Multip
 
 Toggle:OnChanged(function(FeEquipper)
     FEMultiGuns = FeEquipper
-    
-    if FEMultiGuns then
-       Options.Equip1:SetValue(true)
-    end
 
     spawn(function()
         while FEMultiGuns do
@@ -1594,6 +1590,10 @@ Toggle:OnChanged(function(FeEquipper)
             task.wait(0.5)
         end
     end)
+    
+    if FEMultiGuns then
+       Options.Equip1:SetValue(true)
+    end
 end)
     
  local MultiDropdown = Tabs.Misc:AddDropdown("SelectedEquipGuns", {
