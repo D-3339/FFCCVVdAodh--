@@ -624,18 +624,19 @@ end
 
 function EquipGun()
     local gunNames = GetGunsName() 
-    for _, Thing in pairs(Player.Backpack:GetChildren()) do
-        if Thing:IsA("Tool") and table.find(gunNames, Thing.Name) then
-            Thing.Parent = Player.Character
+    for _, tool in pairs(Player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") and table.find(gunNames, tool.Name) then
+            tool.Parent = Player.Character
+            task.wait(0.1) 
         end
     end
 end
 
 function EquipKnives()
     local knifeNames = GetKnivesName()
-    for _, Thing in pairs(Player.Backpack:GetChildren()) do
-        if Thing:IsA("Tool") and table.find(knifeNames, Thing.Name) then
-            Thing.Parent = Player.Character
+    for _, tool in pairs(Player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") and table.find(knifeNames, tool.Name) then
+            tool.Parent = Player.Character
         end
     end
 end
@@ -1485,7 +1486,7 @@ end
         Title = " ",
         Content = ""
     })
- 
+
 function RemoveDuplicateKnives()
     local player = game.Players.LocalPlayer
     local backpack = player.Backpack
@@ -1536,37 +1537,28 @@ function DupeSomethin()
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local backpack = player.Backpack
-    local equippedTools = {}
+    local equippedCount = 0
+    local totalGuns = #weaponList 
 
     for _, tool in pairs(character:GetChildren()) do
-        if tool:IsA("Tool") then
-            table.insert(equippedTools, tool.Name)
+        if tool:IsA("Tool") and table.find(weaponList, tool.Name) then
+            equippedCount += 1
         end
     end
 
     for _, tool in pairs(backpack:GetChildren()) do
-        if tool:IsA("Tool") then
-            table.insert(equippedTools, tool.Name)
+        if tool:IsA("Tool") and table.find(weaponList, tool.Name) then
+            equippedCount += 1
         end
     end
 
-    for _, gunName in pairs(weaponList) do
-        if not table.find(equippedTools, gunName) then
-            spawn(EquipKnives)
-            task.wait(0.1)
-            spawn(EquipGuns)
-            return
-        end
+    if equippedCount >= totalGuns then
+        return
     end
-end
 
-function RealFastFire()
-    for _, v in pairs(getgc(true)) do
-        if type(v) == 'table' and rawget(v, "bullets_per_shot") then
-            v["bullets_per_shot"] = 13
-            v.Spread = { Min = 0, Rec = 0, Inc = 0, Max = 0 }
-        end
-    end
+    spawn(EquipKnives)
+    task.wait(0.1)
+    spawn(EquipGuns)
 end
 
 local FEMultiGuns = false
@@ -1575,7 +1567,8 @@ local Toggle = Tabs.Misc:AddToggle("ServerSidedEquipper", {Title = "Equip Multip
 
 Toggle:OnChanged(function(FeEquipper)
     FEMultiGuns = FeEquipper
-
+    allGunsEquipped = false  
+    
     spawn(function()
         while FEMultiGuns do
             FEEquipingGuns()
@@ -1593,6 +1586,8 @@ Toggle:OnChanged(function(FeEquipper)
     
     if FEMultiGuns then
        Options.Equip1:SetValue(true)
+  else
+       Options.Equip1:SetValue(false)
     end
 end)
     
@@ -1696,7 +1691,7 @@ Toggle:OnChanged(function(Amb2)
         end
     end
 end)
- 
+
 Tabs.Misc:AddParagraph({
         Title = "Gun Mods",
         Content = " "
