@@ -1,4 +1,3 @@
-
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
@@ -143,11 +142,6 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-mainopen.MouseButton1Click:Connect(function()
-    game:GetService("VirtualInputManager"):SendKeyEvent(true, "LeftControl", false, game)
-    game:GetService("VirtualInputManager"):SendKeyEvent(false, "LeftControl", false, game)
-end)
-
 if not require then
     return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: require(path) | PLEASE TRY OTHER EXECUTORS")
 else
@@ -164,6 +158,12 @@ if not setfpscap or setfpscap(500) then
     return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: setfpscap() | PLEASE TRY OTHER EXECUTORS")
 else
 print("Supported setfpscap()")
+end
+
+if not setfflag then
+    return game:GetService("Players").LocalPlayer:Kick("UNC RESTRICTION MISSING: setfflag() | PLEASE TRY OTHER EXECUTORS")
+else
+print("Supported setfflag()")
 end
 
 if not hookmetamethod then
@@ -189,8 +189,8 @@ local normalgrav = workspace.Gravity
 local TweenService = game:GetService("TweenService")
 
 local Window = Fluent:CreateWindow({
-    Title = "Unknown Hub X ZA",
-    SubTitle = "V2.7 Made by Unknownproooolucky discord.gg/d2a3KkTD6r",
+    Title = "Draconic Hub X ZA",
+    SubTitle = "V2.7 Made by LuckyDragon910 discord.gg/d2a3KkTD6r",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
@@ -207,6 +207,10 @@ local Tabs = {
     Misc = Window:AddTab({ Title = "Misc", Icon = "rbxassetid://7734022107" }),
     Settings = Window:AddTab({ Title = "Save Config", Icon = "rbxassetid://7734052335" })
 }
+
+mainopen.MouseButton1Click:Connect(function()
+   Window:Minimize()
+end)
 
 -- Main
 
@@ -494,7 +498,6 @@ local function toggleFly(player, toggleValue)
     end
 end
 
--- Your loop structure
 _G.loops = false
 
 local function flyLoop()
@@ -518,7 +521,7 @@ end)
 
 Options.FlyToggle:SetValue(false)
 
-_G.flySpeed = 20  -- Default fly speed
+_G.flySpeed = 20 
 
 local FlySpeedInput = Tabs.Main:AddInput("FlySpeedInput", {
     Title = "Fly Speed",
@@ -532,7 +535,6 @@ local FlySpeedInput = Tabs.Main:AddInput("FlySpeedInput", {
     end
 })
 
--- Start the loop
 spawn(flyLoop)
 
 local Toggle = Tabs.Main:AddToggle("Noclip", {Title = "Noclip", Default = false })
@@ -561,9 +563,8 @@ if NoClipx then
 
 Options.Noclip:SetValue(false)
 
--- AutoFarm
 local function getNearestBosses()
-local nearest, dist = nil, math.huge -- Set a very large initial distance
+local nearest, dist = nil, math.huge 
     for _, v in pairs(game.Workspace.BossFolder:GetDescendants()) do
         if v:FindFirstChild("Head") then
             local m = (Player.Character.Head.Position - v.Head.Position).magnitude
@@ -577,7 +578,7 @@ local nearest, dist = nil, math.huge -- Set a very large initial distance
 end
 
 local function getNearest()
-    local nearest, dist = nil, math.huge -- Set a very large initial distance
+    local nearest, dist = nil, math.huge
     for _, v in pairs(game.Workspace.BossFolder:GetDescendants()) do
         if v:FindFirstChild("Head") then
             local m = (Player.Character.Head.Position - v.Head.Position).magnitude
@@ -951,7 +952,7 @@ spawn(function()
             if ESP then
                 for i, v in pairs(game:GetService("Workspace").enemies:GetChildren()) do
                     if v:FindFirstChild('HumanoidRootPart') then
-                        local evilHumanoid = v:FindFirstChild("Humanoid")  -- Change "Humanoid" to "EvilHumanoid"
+                        local evilHumanoid = v:FindFirstChild("Humanoid")  
                         
                         if not v:FindFirstChild("MobEap") then
                             local BillboardGui = Instance.new("BillboardGui")
@@ -973,9 +974,9 @@ spawn(function()
                             TextLabel.TextScaled = false
                             TextLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
                             TextLabel.Font = Enum.Font.GothamBold
-                            TextLabel.TextSize = 14  -- Adjust the text size to your preference
+                            TextLabel.TextSize = 14 
 
-                            v.MobEap = BillboardGui  -- Store the BillboardGui in MobEap for later use
+                            v.MobEap = BillboardGui 
                         end
 
                         local distance = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude)
@@ -1016,7 +1017,7 @@ spawn(function()
             if ESP2 then
                 for i, v in pairs(game:GetService("Workspace").BossFolder:GetChildren()) do
                     if v:FindFirstChild('HumanoidRootPart') then
-                        local evilHumanoid = v:FindFirstChild("Humanoid")  -- Change "Humanoid" to "EvilHumanoid"
+                        local evilHumanoid = v:FindFirstChild("Humanoid") 
                         
                         if not v:FindFirstChild("MobEap") then
                             local BillboardGui = Instance.new("BillboardGui")
@@ -1083,7 +1084,7 @@ local Toggle = Tabs.Zombie:AddToggle("BigHead", {Title = "Big Zombie Head", Defa
 
     Toggle:OnChanged(function(value)
     BigHead = value
-while BigHead and wait(0.2) do
+while BigHead and wait(1) do
 
 for _, targetFolder in ipairs(targetFolders) do
     for _, value in pairs(targetFolder:GetDescendants()) do
@@ -1143,7 +1144,7 @@ function NotObstructing(TargetCharacter, ignoreList)
     end
 
     if TargetCharacter and TargetCharacter:FindFirstChild("HumanoidRootPart") then
-        local rayOrigin = LocalPlayer.Character.HumanoidRootPart.Position
+        local rayOrigin = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
         local rayDirection = (TargetCharacter.HumanoidRootPart.Position - rayOrigin).unit * 1000
 
         local raycastParams = RaycastParams.new()
@@ -1181,6 +1182,28 @@ local function BossBehindWall(player)
     return true
 end
 
+local function getRandomToolName()  
+    local toolNames = {}  
+
+    if game.Players.LocalPlayer.Character then  
+        for _, tool in ipairs(game.Players.LocalPlayer.Character:GetChildren()) do  
+            if tool:IsA("Tool") then  
+                table.insert(toolNames, tool.Name)  
+            end  
+        end  
+    end  
+
+    for _, tool in ipairs(game.Players.LocalPlayer.Backpack:GetChildren()) do  
+        if tool:IsA("Tool") then  
+            table.insert(toolNames, tool.Name)  
+        end  
+    end  
+
+    if #toolNames > 0 then  
+        return table.remove(toolNames, math.random(1, #toolNames))  
+    end  
+end  
+
 function getEquippedWeapon(player)
         local char = player.Character
         local weapon = char and char:FindFirstChildWhichIsA("Tool")
@@ -1205,7 +1228,9 @@ local ConfirmSystem = {
 	BulletAura = false,
 	TrackingZombie = false,
 	TrackingBoss = false,
-	Throwing = false
+	Throwing = false,
+	WallbangV1 = false,
+	WallbangV2 = false
 }
 
 local gmt = getrawmetatable(game)
@@ -1217,15 +1242,15 @@ gmt.__namecall = newcclosure(function(self, ...)
        
         if tostring(self) == "Gun" and tostring(method) == "FireServer" and ConfirmSystem.BulletAura == true then
 		      Args[1]["Normal"] = Vector3.new(0,0,0)
-              Args[1]["Direction"] = getNearest().PrimaryPart.Position
+              Args[1]["Direction"] = getNearest().Head.Position
               Args[1]["Name"] = getEquippedWeapon(game.Players.LocalPlayer)
-              Args[1]["Hit"] = getNearest().PrimaryPart
-              Args[1]["Origin"] = getNearest().PrimaryPart.Position
-              Args[1]["Pos"] = getNearest().PrimaryPart.Position
+              Args[1]["Hit"] = getNearest().Head
+              Args[1]["Origin"] = getNearest().Head.Position
+              Args[1]["Pos"] = getNearest().Head.Position
          return self.FireServer(self, unpack(Args))
     elseif tostring(self) == "forhackers" and tostring(method) == "InvokeServer" and ConfirmSystem.Throwing == true then
 		      Args[2] = KnifeName
-		      Args[3] = getNearest().PrimaryPart
+		      Args[3] = getNearest().Head
 		    return self.InvokeServer(self, unpack(Args))
         end
     return oldNamecall(self, ...)
@@ -1258,19 +1283,23 @@ local function isWithinFOVCircle(vector)
     return distToCenter <= circle.Radius
 end
 
-local function ZombieV4()
+ local function ZombieV4()
     local closestDist = math.huge
     local closestPlr = nil
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-    
+    local groundLevel = 0
+
     for _, v in next, game.GetService(game, "Workspace").enemies.GetChildren(game.GetService(game, "Workspace").enemies) do
         if game.FindFirstChild(v,"Humanoid") and v.Humanoid.Health > 0 then
-            local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
-            if isWithinFOVCircle(vector) and NotObstructing(v, {game.Players.LocalPlayer.Character}) then
-                local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
-                if dist < closestDist and onScreen and not ZombieBehindWall(v) then
-                    closestDist = dist
-                    closestPlr = v
+            local head = game.WaitForChild(v, "Head", math.huge)
+            if head.Position.Y > groundLevel then
+                local vector, onScreen = camera.worldToScreenPoint(camera, head.Position)
+                if isWithinFOVCircle(vector) then
+                    local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
+                    if dist < closestDist and onScreen then
+                        closestDist = dist
+                        closestPlr = v
+                    end
                 end
             end
         end
@@ -1285,11 +1314,11 @@ local function BossV4()
     local circleCenter = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
     
     for _, v in next, game.GetService(game, "Workspace").BossFolder.GetDescendants(game.GetService(game, "Workspace").BossFolder) do
-        if game.IsA(v, "Model") and game.FindFirstChild(v,"HumanoidRootPart") then
+        if game.IsA(v, "Model") and game.FindFirstChild(v,"Head") or game.FindFirstChild(v, "HumanoidRootPart") then
             local vector, onScreen = camera.worldToScreenPoint(camera, game.WaitForChild(v, "Head", math.huge).Position)
-            if isWithinFOVCircle(vector) and NotObstructing(v, {game.Players.LocalPlayer.Character}) then
+            if isWithinFOVCircle(vector) then
                 local dist = (circleCenter - Vector2.new(vector.X, vector.Y)).Magnitude
-                if dist < closestDist and onScreen and not BossBehindWall(v) then
+                if dist < closestDist and onScreen then
                     closestDist = dist
                     closestPlr = v
                 end
@@ -1320,18 +1349,86 @@ GunHook = hookmetamethod(game, "__namecall", function(Self, ...)
 	return GunHook(Self, ...)
 end)
 
-local nearesthead = targetFolders
+local function getMultiNearest()
+    local nearestNPCs = {}
+    
+    for _, v in pairs(game.Workspace.BossFolder:GetDescendants()) do
+        if v:FindFirstChild("Head") then
+            local m = (Player.Character.Head.Position - v.Head.Position).magnitude
+            if m <= math.huge then
+                table.insert(nearestNPCs, {npc = v, distance = m})
+            end
+        end
+    end
+
+    for _, v in pairs(game.Workspace.enemies:GetDescendants()) do
+        if v:FindFirstChild("Head") then
+            local m = (Player.Character.Head.Position - v.Head.Position).magnitude
+            if m <= math.huge then
+                table.insert(nearestNPCs, {npc = v, distance = m})
+            end
+        end
+    end
+
+    table.sort(nearestNPCs, function(a, b) return a.distance < b.distance end)
+
+    local selectedNPCs = {}
+    for i = 1, math.min(#nearestNPCs, 7) do
+        table.insert(selectedNPCs, nearestNPCs[i].npc)
+    end
+
+    return selectedNPCs
+end
+
 
 function silentaim()
-if _G._userGun == true and getNearest() then
-game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit",getEquippedWeapon(Player),getNearest()[_G._ZombieKillPart])
-else
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = Vector3.new(0, 0, 0), ["Direction"] = getNearest()[_G._ZombieKillPart].Position, ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = getNearest()[_G._ZombieKillPart].Position, ["Pos"] = getNearest()[_G._ZombieKillPart].Position})
-end
+    local nearestTargets = getMultiNearest()
+    if _G._userGun and nearestTargets then
+        for _, v in pairs(nearestTargets) do
+            local target = v.Head
+            if target then
+                game:GetService("ReplicatedStorage")["forhackers"]:InvokeServer("hit", getEquippedWeapon(Player), target)
+                return
+            end
+        end
+    else
+        if nearestTargets then
+            for _, v in pairs(nearestTargets) do
+                local target = v.Head
+                if target then
+                    game.ReplicatedStorage.Gun:FireServer({
+                        ["Normal"] = Vector3.new(0, 0, 0),
+                        ["Direction"] = target.Position,
+                        ["Name"] = getRandomToolName(),
+                        ["Hit"] = target,
+                        ["Origin"] = target.Position,
+                        ["Pos"] = target.Position
+                    })
+                    return
+                end
+            end
+        end
+    end
 end
 
 function testCframeOrigin()
-game.ReplicatedStorage.Gun:FireServer({["Normal"] = CFrame.new(0, 0, 0), ["Direction"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position), ["Name"] = getEquippedWeapon(Player), ["Hit"] = getNearest()[_G._ZombieKillPart], ["Origin"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position), ["Pos"] = CFrame.new(getNearest()[_G._ZombieKillPart].Position)})
+    local nearestTargets = getMultiNearest()
+    if not nearestTargets then return end
+
+    for _, v in pairs(nearestTargets) do
+        local target = v.Head
+        if target then
+            game.ReplicatedStorage.Gun:FireServer({
+                ["Normal"] = CFrame.new(0, 0, 0),
+                ["Direction"] = CFrame.new(target.Position),
+                ["Name"] = getRandomToolName(),
+                ["Hit"] = target,
+                ["Origin"] = CFrame.new(target.Position),
+                ["Pos"] = CFrame.new(target.Position)
+            })
+            return
+        end
+    end
 end
 
 Tabs.Misc:AddParagraph({
@@ -1368,7 +1465,7 @@ Tabs.Misc:AddButton({
         Description = "(Laggy)",
         Callback = function()
 for i, v in pairs(getgc(true)) do
-     if type(v) == 'table' and rawget(v, 'BulletPerShot') then
+     if type(v) == 'table' and rawget(v, 'Length') then
        v.Damage = -9999
        v.BulletPerShot = 20
        v.Firerate = 20
@@ -1386,30 +1483,24 @@ end
  
  Tabs.Misc:AddParagraph({
         Title = " ",
-        Content = "Tutorial: Equip the Knife to equipping other guns"
+        Content = ""
     })
  
 function RemoveDuplicateKnives()
-    local Player = game.Players.LocalPlayer
-    local backpack = Player.Backpack
+    local player = game.Players.LocalPlayer
+    local backpack = player.Backpack
     local knifeNames = GetKnivesName()
-    local toolCount = {}
+    local tools = {}
 
     for _, tool in pairs(backpack:GetChildren()) do
-        if tool:IsA("Tool") and tool.Name and table.find(knifeNames, tool.Name) then
-            if toolCount[tool.Name] then
-                toolCount[tool.Name] = toolCount[tool.Name] + 1
-            else
-                toolCount[tool.Name] = 1
-            end
+        if tool:IsA("Tool") and table.find(knifeNames, tool.Name) then
+            table.insert(tools, tool)
         end
     end
 
-    for _, tool in pairs(backpack:GetChildren()) do
-        if tool:IsA("Tool") and tool.Name and toolCount[tool.Name] and toolCount[tool.Name] > 1 then
-            tool:Destroy()
-            toolCount[tool.Name] = toolCount[tool.Name] - 1
-        end
+    while #tools > 5 do
+        tools[#tools]:Destroy()
+        table.remove(tools, #tools)
     end
 end
 
@@ -1436,28 +1527,23 @@ function FEEquipingGuns()
     for _, gunName in pairs(weaponList) do
         if not table.find(equippedGuns, gunName) then
             game:GetService("ReplicatedStorage").RemoteEventContainer.CommunicationF:InvokeServer("EquipItem", gunName)
-            wait(2)
-
-            table.insert(equippedGuns, gunName)
+            task.wait(1)
         end
-    end
-
-    if #equippedGuns >= #weaponList then
-        return
     end
 end
 
 function DupeSomethin()
-    local allGunsEquipped = true
-    local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
-    local backpack = game.Players.LocalPlayer.Backpack
-
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local backpack = player.Backpack
     local equippedTools = {}
+
     for _, tool in pairs(character:GetChildren()) do
         if tool:IsA("Tool") then
             table.insert(equippedTools, tool.Name)
         end
     end
+
     for _, tool in pairs(backpack:GetChildren()) do
         if tool:IsA("Tool") then
             table.insert(equippedTools, tool.Name)
@@ -1466,48 +1552,45 @@ function DupeSomethin()
 
     for _, gunName in pairs(weaponList) do
         if not table.find(equippedTools, gunName) then
-            allGunsEquipped = false
-         else
-            allGunsEquipped = true
+            spawn(EquipKnives)
+            task.wait(0.1)
+            spawn(EquipGuns)
+            return
         end
     end
-
-    if allGunsEquipped then
-        return
-    end
-
-    spawn(EquipGun)
-    spawn(EquipKnives)
-    spawn(RemoveDuplicateKnives)
 end
-
 
 function RealFastFire()
-for i, v in pairs(getgc(true)) do
-     if type(v) == 'table' and rawget(v, "bullets_per_shot") then
-       v["bullets_per_shot"] = 13
-       v.Spread = {
-          Min = 0,
-  		Rec = 0,
-  		Inc = 0,
-	  	Max = 0
-       }
-      end
-end
+    for _, v in pairs(getgc(true)) do
+        if type(v) == 'table' and rawget(v, "bullets_per_shot") then
+            v["bullets_per_shot"] = 13
+            v.Spread = { Min = 0, Rec = 0, Inc = 0, Max = 0 }
+        end
+    end
 end
 
-local Uhhhhhhhh = false
+local FEMultiGuns = false
 
- local Toggle = Tabs.Misc:AddToggle("ServerSidedEquipper", {Title = "Equip Multiple Guns", Default = false })
+local Toggle = Tabs.Misc:AddToggle("ServerSidedEquipper", {Title = "Equip Multiple Guns", Default = false})
 
-    Toggle:OnChanged(function(nastyAh)
-    Uhhhhhhhh = nastyAh
-    
-   while Uhhhhhhhh and wait(2) do
-          spawn(DupeSomethin)
-          spawn(FEEquipingGuns)
-       end
+Toggle:OnChanged(function(FeEquipper)
+    FEMultiGuns = FeEquipper
+
+    spawn(function()
+        while FEMultiGuns do
+            FEEquipingGuns()
+            task.wait(1.5)
+        end
     end)
+
+    spawn(function()
+        while FEMultiGuns do
+            DupeSomethin()
+            RemoveDuplicateKnives()
+            task.wait(0.5)
+        end
+    end)
+end)
     
  local MultiDropdown = Tabs.Misc:AddDropdown("SelectedEquipGuns", {
     Title = "Select A Gun to Equip in ServerSided",
@@ -1617,20 +1700,19 @@ Tabs.Misc:AddParagraph({
     
 local BulletAuraV1 = false
 
-local Toggle = Tabs.Misc:AddToggle("BulletAuraV1", {Title = "Bullet Aura V1", Default = false })
+local Toggle = Tabs.Misc:AddToggle("BulletAuraV1", {Title = "Auto Fire", Default = false })
 
     Toggle:OnChanged(function(bool3)
         BulletAuraV1 = bool3
 
-        while BulletAuraV1 and wait() do
+        while BulletAuraV1 and wait(0.01) do
            spawn(silentaim)
            spawn(testCframeOrigin)
-           spawn(testVectorOrigin)
         end
     end)
 
     
-local Toggle = Tabs.Misc:AddToggle("BulletAuraV2", {Title = "Bullet Aura V2", Default = false })
+local Toggle = Tabs.Misc:AddToggle("BulletAuraV2", {Title = "Bullet Aura", Default = false })
 
     Toggle:OnChanged(function(bool3)
     ConfirmSystem.BulletAura = bool3
@@ -1697,6 +1779,42 @@ local Slider = Tabs.Misc:AddSlider("KnifeRange", {
     end
 })
 
+Tabs.Misc:AddParagraph({
+        Title = "Pet Mods",
+        Content = ""
+    })
+    
+local OrbAura = false
+local OrbAuraV2 = false
+    
+function getPetOrbs()
+    for _, targetFolder in ipairs(targetFolders) do
+        for _, enemy in ipairs(targetFolder:GetDescendants()) do
+            local enemyRootPart = enemy:FindFirstChild("Head")
+            if enemyRootPart and (enemyRootPart.Position - game.Players.LocalPlayer.Character.Head.Position).Magnitude < math.huge then                
+                for _, v in pairs(workspace:GetChildren()) do
+                    if v.Name == "Part" and v:IsA("BasePart") and v:FindFirstChildWhichIsA("TouchTransmitter") then
+                        firetouchinterest(enemyRootPart, v, 1)
+                        firetouchinterest(enemyRootPart, v, 0)                    
+                        v.Size = Vector3.new(2, 2, 2)
+                    end
+                end
+            end
+        end
+    end
+end
+
+local Toggle = Tabs.Misc:AddToggle("OrbsAura", {Title = "Orbs Aura", Default = false })
+
+    Toggle:OnChanged(function(bool3)
+        OrbAura = bool3
+
+        while OrbAura and wait() do
+           spawn(getPetOrbs)
+        end
+    end)
+    
+
 -- Settings
 
 Tabs.Settings:AddParagraph({
@@ -1711,7 +1829,7 @@ SaveManager:SetIgnoreIndexes({})
 
 -- Save Folder
 InterfaceManager:SetFolder("UnknownHubXUniversal")
-SaveManager:SetFolder("UnknownHubXUniversal/Evade")
+SaveManager:SetFolder("UnknownHubXUniversal/ZombieAttack")
 
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
