@@ -1731,7 +1731,7 @@ end
 function CarryPlayer()
 local player = game.Players.LocalPlayer
 local nearestPlayer = getNearestDownedPlayer()
-      if nearestPlayer and player.Character:GetAttribute("State") == "Run" or player.Character:GetAttribute("State") == "Air" or player.Character:GetAttribute("State") == "Slide" or player.Character:GetAttribute("State") == "Fall" or player.Character:GetAttribute("State") == "Jump" or player.Character:GetAttribute("State") == "Crouch" then
+   if nearestPlayer and player.Character:GetAttribute("State") == "Run" or player.Character:GetAttribute("State") == "Air" or player.Character:GetAttribute("State") == "Slide" or player.Character:GetAttribute("State") == "Fall" or player.Character:GetAttribute("State") == "Jump" or player.Character:GetAttribute("State") == "Crouch" then
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", nil, tostring(nearestPlayer))
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", false, tostring(nearestPlayer))
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
@@ -1739,7 +1739,7 @@ local nearestPlayer = getNearestDownedPlayer()
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
          game:GetService("ReplicatedStorage").Events.Character.Interact:FireServer("Carry", true, tostring(nearestPlayer))
-      end
+     end
 end
 
 local Players = game:GetService("Players")
@@ -2412,7 +2412,6 @@ Tabs.Misc:AddParagraph({
     
 local BHop = false
 local BHOPGuiSize = 75
-local BHOPAdjustNum = "-24"
 local delay = 1
 
 local BHop2 = false
@@ -2461,34 +2460,36 @@ end
 -- Auto-Jump
 spawn(function()
 while true and wait(0.1) do
-    if BHop2 and BHOPType == "Acceleration" then
-         setfflag("MaxAltitudePDStickHipHeightPercent", BHOPAdjustNum)
-      else
-         setfflag("MaxAltitudePDStickHipHeightPercent", "10")
-    end
-       
-       if BHop2 and BHOPType == "No-Acceleration" then
+   if BHop2 then
+      if BHOPType == "Acceleration" then
           local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
           local humanoid = char:FindFirstChildOfClass("Humanoid")
           
           if not humanoid then return end
-          
-          if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+             if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                setTFriction(-1)
                 humanoid.Jump = true
                 humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 humanoid.Jump = false
+          else
+               setTFriction(-1)
+            end
+       end
+
+       if BHOPType == "No-Acceleration" then
+          local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
+          local humanoid = char:FindFirstChildOfClass("Humanoid")
+          
+          if not humanoid then return end
+             if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                humanoid.Jump = true
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                humanoid.Jump = false
+                end
              end
          end
      end
 end)
-
-local Players = game:GetService("Players")
-
-local function onPlayerRemoving()
-setfflag("MaxAltitudePDStickHipHeightPercent", "10")
-end
-
-Players.PlayerRemoving:Connect(onPlayerRemoving)
 
 function destroytoggle()
 local target = game.CoreGui
@@ -2519,13 +2520,23 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         BHopKey = Bool
           spawn(function()
             while true and wait(0.1) do
-                if BHopKey and BHOPType == "Acceleration" then 
-                 setfflag("MaxAltitudePDStickHipHeightPercent", "-24")
-             else
-                 setfflag("MaxAltitudePDStickHipHeightPercent", "10")
+              if BHopKey then
+                if BHOPType == "Acceleration" then 
+                 local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
+                 local humanoid = char:FindFirstChildOfClass("Humanoid")
+          
+                 if not humanoid then return end
+                 if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
+                    setTFriction(-1)
+                    humanoid.Jump = true
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                    humanoid.Jump = false
+               else
+                  setTFriction(-1)
                 end
+           end
                 
-               if BHop2 and BHOPType == "No-Acceleration" then
+               if BHOPType == "No-Acceleration" then
                    local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
                    local humanoid = char:FindFirstChildOfClass("Humanoid")
           
@@ -2535,6 +2546,7 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
                        humanoid.Jump = true
                        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                        humanoid.Jump = false
+                       end
                    end
                end
            end
@@ -2561,17 +2573,6 @@ local Input = Tabs.Misc:AddInput("GuiSize", {
         Finished = false, -- Only calls callback when you press enter
         Callback = function(Value)
             BHOPGuiSize = tonumber(Value) or 75
-        end
-    })
-    
-local Input = Tabs.Misc:AddInput("BhopAdjust", {
-        Title = "BHOP Adjustment (Minus Only)",
-        Default = "-24",
-        Placeholder = "Minus Number",
-        Numeric = false, -- Only allows numbers
-        Finished = false, -- Only calls callback when you press enter
-        Callback = function(Value)
-            BHOPAdjustNum = tostring(Value) or  "-24"
         end
     })
 
