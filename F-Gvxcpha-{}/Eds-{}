@@ -1749,6 +1749,7 @@ local UserInputService = game:GetService("UserInputService")
 
 local AutoRevive = false
 local AutoCarryGui = false
+local AutoCarryEmoting = false
 local DelayRevive = 0.1
 
 local Toggle = Tabs.Misc:AddToggle("InsRev", {Title = "Instant Revive", Default = false})
@@ -1846,7 +1847,7 @@ target.AutoCarryToggle:Destroy()
 end
 end
     
-local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry (I'll remove this later)", Default = false})
+local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry", Default = false})
 
 Toggle:OnChanged(function(State)
     AutoCarryGui = State
@@ -2198,7 +2199,11 @@ local Toggle = Tabs.Misc:AddToggle("SprintSlide", {Title = "Sprint Slide", Defau
         FakeInfSlide = State
 
     if not FakeInfSlide then
+        local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait() 
         setTFriction(TFriction2)
+        if char and char:FindFirstChildWhichIsA("Humanoid") then
+            char.Humanoid.HipHeight = -1.25
+        end
     end
 
     while FakeInfSlide and wait(0.03) do
@@ -2463,7 +2468,14 @@ spawn(function()
     while wait(0.1) do
     
         if not BHop2 and not FakeInfSlide then
+           local player = game:GetService("Players").LocalPlayer
+           local char = player.Character or player.CharacterAdded:Wait()
+           local humanoid = char:FindFirstChildOfClass("Humanoid")
            setTFriction(5)
+           
+           if humanoid then
+              humanoid.HipHeight = -1.25
+           end
        end
        
         if BHop2 then
@@ -2476,6 +2488,7 @@ spawn(function()
             if BHOPType == "Acceleration" then
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
                     setTFriction(-1)
+                    humanoid.HipHeight = -0.8
                     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 end
             end
@@ -2518,9 +2531,16 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         BHopKey = Bool
           spawn(function()
              while wait(0.1) do
-                 if not BHopKey and not FakeInfSlide then
+                 if not BHop2 and not FakeInfSlide then
+                    local player = game:GetService("Players").LocalPlayer
+                    local char = player.Character or player.CharacterAdded:Wait()
+                    local humanoid = char:FindFirstChildOfClass("Humanoid")
                     setTFriction(5)
-                end
+           
+                   if humanoid then
+                      humanoid.HipHeight = -1.25
+                  end
+             end
                 
                  if BHopKey then
                     local player = game:GetService("Players").LocalPlayer
@@ -2532,6 +2552,7 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
                     if BHOPType == "Acceleration" then
                       if humanoid.FloorMaterial ~= Enum.Material.Air then
                          setTFriction(-1)
+                         humanoid.HipHeight = -0.8
                          humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                      end
                 end
@@ -3011,4 +3032,4 @@ setTJump(TJump2)
 setTJumpCap(TJumpCap2)
      end
    end
-end) 
+end)
