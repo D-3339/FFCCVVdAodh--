@@ -1421,6 +1421,7 @@ local TJump2 = 3
 
 local function cacheTables()
     local gcObjects = getgc(true)
+    
     for i = 1, #gcObjects do
         local v = gcObjects[i]
         if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
@@ -2459,36 +2460,35 @@ end
 
 -- Auto-Jump
 spawn(function()
-while true and wait(0.1) do
-   if BHop2 then
-      if BHOPType == "Acceleration" then
-          local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
-          local humanoid = char:FindFirstChildOfClass("Humanoid")
-          
-          if not humanoid then return end
-             if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
-                setTFriction(-1)
-                humanoid.Jump = true
-                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                humanoid.Jump = false
-          else
-               setTFriction(-1)
-            end
+    while wait(0.01) do
+    
+        if not BHop2 and not FakeInfSlide then
+           setTFriction(5)
        end
+       
+        if BHop2 then
+            local player = game:GetService("Players").LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            
+            if not humanoid then return end
 
-       if BHOPType == "No-Acceleration" then
-          local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
-          local humanoid = char:FindFirstChildOfClass("Humanoid")
-          
-          if not humanoid then return end
-             if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
-                humanoid.Jump = true
-                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                humanoid.Jump = false
+            if BHOPType == "Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    setTFriction(-1)
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                else
+                    setTFriction(-1)
                 end
-             end
-         end
-     end
+            end
+            
+            if BHOPType == "No-Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+        end
+    end
 end)
 
 function destroytoggle()
@@ -2519,38 +2519,35 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         Callback = function(Bool)
         BHopKey = Bool
           spawn(function()
-            while true and wait(0.1) do
-              if BHopKey then
-                if BHOPType == "Acceleration" then 
-                 local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
-                 local humanoid = char:FindFirstChildOfClass("Humanoid")
-          
-                 if not humanoid then return end
-                 if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
-                    setTFriction(-1)
-                    humanoid.Jump = true
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                    humanoid.Jump = false
-               else
-                  setTFriction(-1)
+             while wait(0.01) do
+                 if not BHopKey and not FakeInfSlide then
+                    setTFriction(5)
                 end
-           end
                 
-               if BHOPType == "No-Acceleration" then
-                   local char = game:GetService("Players").LocalPlayer.Character or game:GetService("Players").LocalPlayer.CharacterAdded:Wait()
-                   local humanoid = char:FindFirstChildOfClass("Humanoid")
-          
-                   if not humanoid then return end
-          
-                   if humanoid and humanoid.FloorMaterial ~= Enum.Material.Air then
-                       humanoid.Jump = true
-                       humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                       humanoid.Jump = false
-                       end
-                   end
-               end
-           end
-       end)
+                 if BHopKey then
+                    local player = game:GetService("Players").LocalPlayer
+                    local char = player.Character or player.CharacterAdded:Wait()
+                    local humanoid = char:FindFirstChildOfClass("Humanoid")
+            
+                    if not humanoid then return end
+
+                    if BHOPType == "Acceleration" then
+                      if humanoid.FloorMaterial ~= Enum.Material.Air then
+                         setTFriction(-1)
+                         humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                  else
+                    setTFriction(-1)
+                end
+            end
+
+            if BHOPType == "No-Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+        end
+    end
+end)
    end,
     })
 
@@ -2906,8 +2903,6 @@ end
 game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
       CachesAdjusment = {}
       wait(5)
-      optimizegetgc()
-      wait(9)
       cacheTables()
       optimizegetgc()
 end)
@@ -2917,7 +2912,6 @@ game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded:Connect(function(chi
         CachesAdjusment = {}
         wait(5)
         cacheTables()
-        wait(9)
         optimizegetgc()
     end
 end)
