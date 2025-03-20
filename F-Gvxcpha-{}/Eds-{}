@@ -2460,7 +2460,7 @@ end
 
 -- Auto-Jump
 spawn(function()
-    while wait(0.01) do
+    while wait(0.1) do
     
         if not BHop2 and not FakeInfSlide then
            setTFriction(5)
@@ -2477,8 +2477,6 @@ spawn(function()
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
                     setTFriction(-1)
                     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                else
-                    setTFriction(-1)
                 end
             end
             
@@ -2519,7 +2517,7 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         Callback = function(Bool)
         BHopKey = Bool
           spawn(function()
-             while wait(0.01) do
+             while wait(0.1) do
                  if not BHopKey and not FakeInfSlide then
                     setTFriction(5)
                 end
@@ -2535,10 +2533,8 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
                       if humanoid.FloorMaterial ~= Enum.Material.Air then
                          setTFriction(-1)
                          humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                  else
-                    setTFriction(-1)
+                     end
                 end
-            end
 
             if BHOPType == "No-Acceleration" then
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
