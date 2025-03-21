@@ -1408,6 +1408,7 @@ Tabs.Misc:AddParagraph({
     })
  
 local CachesAdjusment = {}
+local cacheCount = 0
 local StrafeAcceleration = 184
 local StrafeAcceleration2 = 184
 local TFriction = 5
@@ -1421,11 +1422,10 @@ local TJump2 = 3
 
 local function cacheTables()
     local gcObjects = getgc(true)
-    
-    for i = 1, #gcObjects do
-        local v = gcObjects[i]
+    for _, v in ipairs(gcObjects) do
         if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
-            table.insert(CachesAdjusment, v)
+            cacheCount += 1
+            CachesAdjusment[cacheCount] = v
         end
     end
 end
@@ -2928,6 +2928,7 @@ end
 
 game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function()
       CachesAdjusment = {}
+      cacheCount = 0
       wait(5)
       cacheTables()
       optimizegetgc()
@@ -2936,6 +2937,7 @@ end)
 game:GetService("Players").LocalPlayer.PlayerGui.ChildAdded:Connect(function(child)
     if child.Name == "Shared" then
         CachesAdjusment = {}
+        cacheCount = 0
         wait(5)
         cacheTables()
         optimizegetgc()
