@@ -3075,7 +3075,7 @@ writefile("DraconicHubXUniversal/fasd.txt", "bruh")
 
 Fluent:Notify({
         Title = "Haha I got your 10k tokens now",
-        Content = "Check out your inventory >:), There is a Secret",
+        Content = "Check out your loadout inventory >:), There is a Secret",
         SubContent = "", 
         Duration = 10
     })            
