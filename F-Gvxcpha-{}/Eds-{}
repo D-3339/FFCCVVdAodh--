@@ -1058,176 +1058,6 @@ Tabs.AutoFarm:AddButton({
     return EmoteNames
 end
 
-if _G.DevMode == true then
-
-function GetCosmeticName()
-    local Names = {}
-    local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
-
-    for _, thing in ipairs(Folder:GetChildren()) do
-        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
-            Names[#Names + 1] = thing.Name 
-        end
-        if _ % 50 == 0 then 
-            task.wait()
-        end
-    end
-
-    return Names
-end
-    
- function GetLoadoutName()
-    local Names = {}
-    local Folder = game:GetService("ReplicatedStorage").Items.Loadout
-
-    for _, thing in ipairs(Folder:GetChildren()) do
-        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
-            Names[#Names + 1] = thing.Name 
-        end
-        if _ % 50 == 0 then
-            task.wait()
-        end
-    end
-
-    return Names
-end
-
-function GetPerksName()
-    local Names = {}
-    local Folder = game:GetService("ReplicatedStorage").Items.Perks
-
-    for _, thing in ipairs(Folder:GetChildren()) do
-        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
-            Names[#Names + 1] = thing.Name 
-        end
-        if _ % 50 == 0 then 
-            task.wait()
-        end
-    end
-
-    return Names
-end
-
-local SelectedBuyEmote = ""
-local SelectedBuyPerks = ""
-local SelectedBuyLoadout = ""
-local SelectedBuyCosmetic = ""
-    
- Tabs.AutoFarm:AddParagraph({
-        Title = "Purchase Shortcut",
-        Content = "WARNING: it can waste your tokens/points/tickets"
-    })
-
-local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown1", {
-    Title = "Select Loadout",
-    Values = GetLoadoutName(),
-    Multi = false,
-    Default = 1,
-})
-
-Dropdown:OnChanged(function(Value)
-    SelectedBuyLoadout = Value
-end)
-
-Tabs.AutoFarm:AddButton({
-        Title = "Purchase Loadout",
-        Description = " ",
-        Callback = function()
-            local Folder = game:GetService("ReplicatedStorage").Items.Loadout
-            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
-
-            for _, thing in ipairs(Folder:GetChildren()) do
-                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyLoadout and thing:GetAttribute("ID") then
-                     local ID = thing:GetAttribute("ID")
-                     purchaseEvent:InvokeServer(ID)
-                end
-            end
-        end
-    })
-
-local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown2", {
-    Title = "Select Emote",
-    Values = GetEmotesName(),
-    Multi = false,
-    Default = 1,
-})
-
-Dropdown:OnChanged(function(Value)
-    SelectedBuyEmote = Value
-end)
-
-Tabs.AutoFarm:AddButton({
-        Title = "Purchase Emote",
-        Description = " ",
-        Callback = function()
-            local Folder = game:GetService("ReplicatedStorage").Items.Emotes
-            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
-
-            for _, thing in ipairs(Folder:GetChildren()) do
-                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyEmote and thing:GetAttribute("ID") then
-                     local ID = thing:GetAttribute("ID")
-                     purchaseEvent:InvokeServer(ID)
-                end
-            end
-        end
-    })
-
-local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown3", {
-    Title = "Select Cosmetic",
-    Values = GetCosmeticName(),
-    Multi = false,
-    Default = 1,
-})
-
-Dropdown:OnChanged(function(Value)
-    SelectedBuyCosmetic = Value
-end)
-
-Tabs.AutoFarm:AddButton({
-        Title = "Purchase Cosmetic",
-        Description = " ",
-        Callback = function()
-            local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
-            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
-
-            for _, thing in ipairs(Folder:GetChildren()) do
-                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyCosmetic and thing:GetAttribute("ID") then
-                     local ID = thing:GetAttribute("ID")
-                     purchaseEvent:InvokeServer(ID)
-                end
-            end
-        end
-    })
-
-local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown4", {
-    Title = "Select Perks",
-    Values = GetPerksName(),
-    Multi = false,
-    Default = 1,
-})
-
-Dropdown:OnChanged(function(Value)
-    SelectedBuyPerks = Value
-end)
-
-Tabs.AutoFarm:AddButton({
-        Title = "Purchase Perks",
-        Description = " ",
-        Callback = function()
-            local Folder = game:GetService("ReplicatedStorage").Items.Perks
-            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
-
-            for _, thing in ipairs(Folder:GetChildren()) do
-                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyPerks and thing:GetAttribute("ID") then
-                     local ID = thing:GetAttribute("ID")
-                     purchaseEvent:InvokeServer(ID)
-                end
-            end
-        end
-    })
-    
-end
-
 -- Combat
 
 Tabs.Combat:AddParagraph({
@@ -1590,7 +1420,7 @@ local TSpeed2 = 1500
 local TJump = 3
 local TJump2 = 3
 
-function cacheTables()
+local function cacheTables()
     local gcObjects = getgc(true)
     for _, v in ipairs(gcObjects) do
         if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
@@ -1600,20 +1430,11 @@ function cacheTables()
     end
 end
 
-function setTFriction(newFriction)
-    if TFriction ~= newFriction then
-        TFriction = newFriction
-        for i = 1, cacheCount do
-            rawset(CachesAdjusment[i], "Friction", newFriction)
-        end
-    end
-end
-
 function setTSpeed(newSpeed)
     if TSpeed ~= newSpeed then
         TSpeed = newSpeed
-        for i = 1, cacheCount do
-            rawset(CachesAdjusment[i], "Speed", newSpeed)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "Speed", TSpeed)
         end
     end
 end
@@ -1621,8 +1442,8 @@ end
 function setTJump(newJump)
     if TJump ~= newJump then
         TJump = newJump
-        for i = 1, cacheCount do
-            rawset(CachesAdjusment[i], "JumpHeight", TJump)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "JumpHeight", TJump)
         end
     end
 end
@@ -1630,8 +1451,17 @@ end
 function setTJumpCap(newJumpCap)
     if TJumpCap ~= newJumpCap then
         TJumpCap = newJumpCap
-        for i = 1, cacheCount do
-            rawset(CachesAdjusment[i], "JumpCap", TJumpCap)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "JumpCap", TJumpCap)
+        end
+    end
+end
+
+function setTFriction(newFriction)
+    if TFriction ~= newFriction then
+        TFriction = newFriction
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "Friction", newFriction)
         end
     end
 end
@@ -1639,9 +1469,9 @@ end
 function setStrafeAcceleration(newAcceleration)
     if StrafeAcceleration ~= newAcceleration then
         StrafeAcceleration = newAcceleration
-        for i = 1, cacheCount do
-            rawset(CachesAdjusment[i], "AirStrafeAcceleration", StrafeAcceleration)
-            rawset(CachesAdjusment[i], "AirAcceleration", 3)
+        for _, v in ipairs(CachesAdjusment) do
+            rawset(v, "AirStrafeAcceleration", StrafeAcceleration)
+            rawset(v, "AirAcceleration", 3)
         end
     end
 end
@@ -2586,178 +2416,9 @@ local Input = Tabs.Misc:AddInput("GravityAdjust", {
     
 Tabs.Misc:AddParagraph({
         Title = " ",
-        Content = ""
+        Content = "BHOP Features will be back soon."
     })
     
-local BHop = false
-local BHOPGuiSize = 75
-local delay = 1
-
-local BHop2 = false
-local BHopKey = false
-
-local function createtoggle()
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Parent = game.CoreGui
-    screenGui.Name = "BHopToggle"
-    screenGui.ResetOnSpawn = false
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, BHOPGuiSize, 0, BHOPGuiSize)
-    frame.Position = UDim2.new(1, -120, 0.5, -50)
-    frame.BackgroundColor3 = Color3.new(1, 1, 1)
-    frame.BorderSizePixel = 2
-    frame.BorderColor3 = Color3.new(0, 0, 0)
-    frame.BackgroundTransparency = 0
-    frame.Parent = screenGui
-    frame.Active = true
-    frame.Draggable = true
-    frame.ClipsDescendants = true
-    
-    local uiCorner = Instance.new("UICorner")
-    uiCorner.CornerRadius = UDim.new(1, 0)
-    uiCorner.Parent = frame
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(1, 0, 1, 0)
-    toggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
-    toggleButton.BorderSizePixel = 0
-    toggleButton.TextColor3 = Color3.new(0, 0, 0)
-    toggleButton.Font = Enum.Font.GothamBold
-    toggleButton.TextSize = 14
-    toggleButton.Text = "Auto Jump: OFF"
-    toggleButton.Parent = frame
-    
-    toggleButton.MouseButton1Click:Connect(function()
-        BHop2 = not BHop2
-        toggleButton.Text = BHop2 and "Auto Jump: ON" or "Auto Jump: OFF"
-    end)
-    
-    MakeDraggable(toggleButton, frame)
-end
-
--- Auto-Jump
-spawn(function()
-    while wait(0.1) do
-        local player = game:GetService("Players").LocalPlayer
-        local char = player.Character or player.CharacterAdded:Wait()
-        local humanoid = char:FindFirstChild("Humanoid")
-
-        if not humanoid then return end
-
-        local rigType = char:GetAttribute("RigType")
-        local ogHipHeight = rigType == "R6" and -1.25 or 0.75
-        local modifiedHipHeight = rigType == "R6" and -0.8 or 1.75
-
-        if not BHop2 then
-            if not FakeInfSlide then
-                setTFriction(5)
-            end
-            humanoid.HipHeight = ogHipHeight
-        end
-
-        if BHop2 then
-            if BHOPType == "Acceleration" then
-                if humanoid.FloorMaterial ~= Enum.Material.Air then
-                    setTFriction(-1)
-                    humanoid.HipHeight = modifiedHipHeight
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
-            elseif BHOPType == "No-Acceleration" then
-                if humanoid.FloorMaterial ~= Enum.Material.Air then
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
-            end
-        end
-    end
-end)
-
-function destroytoggle()
-local target = game.CoreGui
-
-if target:FindFirstChild("BHopToggle") then
-target.BHopToggle:Destroy()
-end
-end
-
-local Toggle = Tabs.Misc:AddToggle("BHOPToggle", {Title = "BHOP Toggle", Default = false })
-
-    Toggle:OnChanged(function(State)
-       BHop = State
-       
-       if BHop then
-          createtoggle()
-       else
-          destroytoggle()
-      end
-end)
-
-local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
-        Title = "Keybind to BHOP",
-        Mode = "Toggle", -- Always, Toggle, Hold
-        Default = "B",
-        
-        Callback = function(Bool)
-        BHopKey = Bool
-   end,
-    })
-    
-spawn(function()
-    while wait(0.1) do
-        local player = game:GetService("Players").LocalPlayer
-        local char = player.Character or player.CharacterAdded:Wait()
-        local humanoid = char:FindFirstChild("Humanoid")
-
-        if not humanoid then return end
-
-        local rigType = char:GetAttribute("RigType")
-        local ogHipHeight = rigType == "R6" and -1.25 or 0.75
-        local modifiedHipHeight = rigType == "R6" and -0.8 or 1.75
-
-        if not BHopKey then
-            if not FakeInfSlide then
-                setTFriction(5)
-            end
-            humanoid.HipHeight = ogHipHeight
-        end
-
-        if BHopKey then
-            if BHOPType == "Acceleration" then
-                if humanoid.FloorMaterial ~= Enum.Material.Air then
-                    setTFriction(-1)
-                    humanoid.HipHeight = modifiedHipHeight
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
-            elseif BHOPType == "No-Acceleration" then
-                if humanoid.FloorMaterial ~= Enum.Material.Air then
-                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                end
-            end
-        end
-    end
-end)
-
-local Dropdown = Tabs.Misc:AddDropdown("BHOPType", {
-        Title = "Select BHOP Type",
-        Values = {"Acceleration", "No-Acceleration"},
-        Multi = false,
-        Default = 1,
-    })
-
-    Dropdown:OnChanged(function(Value)
-        BHOPType = Value
-    end)
-
-local Input = Tabs.Misc:AddInput("GuiSize", {
-        Title = "BHOP Gui Size",
-        Default = "75",
-        Placeholder = "Size Number",
-        Numeric = false, -- Only allows numbers
-        Finished = false, -- Only calls callback when you press enter
-        Callback = function(Value)
-            BHOPGuiSize = tonumber(Value) or 75
-        end
-    })
 
  Tabs.Misc:AddParagraph({
         Title = "Game Visual Modification and Optimization",
