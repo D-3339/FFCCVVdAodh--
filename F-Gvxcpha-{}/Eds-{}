@@ -1058,6 +1058,176 @@ Tabs.AutoFarm:AddButton({
     return EmoteNames
 end
 
+if _G.DevMode == true then
+
+function GetCosmeticName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then 
+            task.wait()
+        end
+    end
+
+    return Names
+end
+    
+ function GetLoadoutName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Loadout
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then
+            task.wait()
+        end
+    end
+
+    return Names
+end
+
+function GetPerksName()
+    local Names = {}
+    local Folder = game:GetService("ReplicatedStorage").Items.Perks
+
+    for _, thing in ipairs(Folder:GetChildren()) do
+        if thing:IsA("LocalScript") or thing:IsA("ModuleScript") then
+            Names[#Names + 1] = thing.Name 
+        end
+        if _ % 50 == 0 then 
+            task.wait()
+        end
+    end
+
+    return Names
+end
+
+local SelectedBuyEmote = ""
+local SelectedBuyPerks = ""
+local SelectedBuyLoadout = ""
+local SelectedBuyCosmetic = ""
+    
+ Tabs.AutoFarm:AddParagraph({
+        Title = "Purchase Shortcut",
+        Content = "WARNING: it can waste your tokens/points/tickets"
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown1", {
+    Title = "Select Loadout",
+    Values = GetLoadoutName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyLoadout = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Loadout",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Loadout
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyLoadout and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown2", {
+    Title = "Select Emote",
+    Values = GetEmotesName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyEmote = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Emote",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Emotes
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyEmote and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown3", {
+    Title = "Select Cosmetic",
+    Values = GetCosmeticName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyCosmetic = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Cosmetic",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Cosmetics
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyCosmetic and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+
+local Dropdown = Tabs.AutoFarm:AddDropdown("Dropdown4", {
+    Title = "Select Perks",
+    Values = GetPerksName(),
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:OnChanged(function(Value)
+    SelectedBuyPerks = Value
+end)
+
+Tabs.AutoFarm:AddButton({
+        Title = "Purchase Perks",
+        Description = " ",
+        Callback = function()
+            local Folder = game:GetService("ReplicatedStorage").Items.Perks
+            local purchaseEvent = game:GetService("ReplicatedStorage").Events.Data.Purchase
+
+            for _, thing in ipairs(Folder:GetChildren()) do
+                 if (thing:IsA("LocalScript") or thing:IsA("ModuleScript")) and thing.Name == SelectedBuyPerks and thing:GetAttribute("ID") then
+                     local ID = thing:GetAttribute("ID")
+                     purchaseEvent:InvokeServer(ID)
+                end
+            end
+        end
+    })
+    
+end
+
 -- Combat
 
 Tabs.Combat:AddParagraph({
@@ -1420,7 +1590,7 @@ local TSpeed2 = 1500
 local TJump = 3
 local TJump2 = 3
 
-local function cacheTables()
+function cacheTables()
     local gcObjects = getgc(true)
     for _, v in ipairs(gcObjects) do
         if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
@@ -1430,11 +1600,20 @@ local function cacheTables()
     end
 end
 
+function setTFriction(newFriction)
+    if TFriction ~= newFriction then
+        TFriction = newFriction
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "Friction", newFriction)
+        end
+    end
+end
+
 function setTSpeed(newSpeed)
     if TSpeed ~= newSpeed then
         TSpeed = newSpeed
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "Speed", TSpeed)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "Speed", newSpeed)
         end
     end
 end
@@ -1442,8 +1621,8 @@ end
 function setTJump(newJump)
     if TJump ~= newJump then
         TJump = newJump
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "JumpHeight", TJump)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "JumpHeight", TJump)
         end
     end
 end
@@ -1451,17 +1630,8 @@ end
 function setTJumpCap(newJumpCap)
     if TJumpCap ~= newJumpCap then
         TJumpCap = newJumpCap
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "JumpCap", TJumpCap)
-        end
-    end
-end
-
-function setTFriction(newFriction)
-    if TFriction ~= newFriction then
-        TFriction = newFriction
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "Friction", newFriction)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "JumpCap", TJumpCap)
         end
     end
 end
@@ -1469,9 +1639,9 @@ end
 function setStrafeAcceleration(newAcceleration)
     if StrafeAcceleration ~= newAcceleration then
         StrafeAcceleration = newAcceleration
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "AirStrafeAcceleration", StrafeAcceleration)
-            rawset(v, "AirAcceleration", 3)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "AirStrafeAcceleration", StrafeAcceleration)
+            rawset(CachesAdjusment[i], "AirAcceleration", 3)
         end
     end
 end
@@ -2469,37 +2639,31 @@ end
 -- Auto-Jump
 spawn(function()
     while wait(0.1) do
-    
-        if not BHop2 then
-          if not FakeInfSlide then
-             setTFriction(5)
-         end
-           
-           local player = game:GetService("Players").LocalPlayer
-           local char = player.Character or player.CharacterAdded:Wait()
-           local humanoid = char:FindFirstChildOfClass("Humanoid")
-           
-           if humanoid then
-              humanoid.HipHeight = -1.25
-           end
-       end
-       
-        if BHop2 then
-            local player = game:GetService("Players").LocalPlayer
-            local char = player.Character or player.CharacterAdded:Wait()
-            local humanoid = char:FindFirstChildOfClass("Humanoid")
-            
-            if not humanoid then return end
+        local player = game:GetService("Players").LocalPlayer
+        local char = player.Character or player.CharacterAdded:Wait()
+        local humanoid = char:FindFirstChild("Humanoid")
 
+        if not humanoid then return end
+
+        local rigType = char:GetAttribute("RigType")
+        local ogHipHeight = rigType == "R6" and -1.25 or 0.75
+        local modifiedHipHeight = rigType == "R6" and -0.8 or 1.75
+
+        if not BHop2 then
+            if not FakeInfSlide then
+                setTFriction(5)
+            end
+            humanoid.HipHeight = ogHipHeight
+        end
+
+        if BHop2 then
             if BHOPType == "Acceleration" then
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
                     setTFriction(-1)
-                    humanoid.HipHeight = -0.8
+                    humanoid.HipHeight = modifiedHipHeight
                     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 end
-            end
-            
-            if BHOPType == "No-Acceleration" then
+            elseif BHOPType == "No-Acceleration" then
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
                     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 end
@@ -2535,38 +2699,36 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         
         Callback = function(Bool)
         BHopKey = Bool
-          spawn(function()
-             while wait(0.1) do
-                 if not BHopKey then
-                   if not FakeInfSlide then
-                     setTFriction(5)
-                 end
-           
-                local player = game:GetService("Players").LocalPlayer
-                local char = player.Character or player.CharacterAdded:Wait()
-                local humanoid = char:FindFirstChildOfClass("Humanoid")
-           
-               if humanoid then
-                  humanoid.HipHeight = -1.25
-               end
-           end
-                
-                 if BHopKey then
-                    local player = game:GetService("Players").LocalPlayer
-                    local char = player.Character or player.CharacterAdded:Wait()
-                    local humanoid = char:FindFirstChildOfClass("Humanoid")
-            
-                    if not humanoid then return end
+   end,
+    })
+    
+spawn(function()
+    while wait(0.1) do
+        local player = game:GetService("Players").LocalPlayer
+        local char = player.Character or player.CharacterAdded:Wait()
+        local humanoid = char:FindFirstChild("Humanoid")
 
-                    if BHOPType == "Acceleration" then
-                      if humanoid.FloorMaterial ~= Enum.Material.Air then
-                         setTFriction(-1)
-                         humanoid.HipHeight = -0.8
-                         humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-                     end
+        if not humanoid then return end
+
+        local rigType = char:GetAttribute("RigType")
+        local ogHipHeight = rigType == "R6" and -1.25 or 0.75
+        local modifiedHipHeight = rigType == "R6" and -0.8 or 1.75
+
+        if not BHopKey then
+            if not FakeInfSlide then
+                setTFriction(5)
+            end
+            humanoid.HipHeight = ogHipHeight
+        end
+
+        if BHopKey then
+            if BHOPType == "Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    setTFriction(-1)
+                    humanoid.HipHeight = modifiedHipHeight
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 end
-
-            if BHOPType == "No-Acceleration" then
+            elseif BHOPType == "No-Acceleration" then
                 if humanoid.FloorMaterial ~= Enum.Material.Air then
                     humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
                 end
@@ -2574,8 +2736,6 @@ local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
         end
     end
 end)
-   end,
-    })
 
 local Dropdown = Tabs.Misc:AddDropdown("BHOPType", {
         Title = "Select BHOP Type",
@@ -2888,6 +3048,99 @@ Tabs.Settings:AddButton({
             fpsCounter:Destroy()
         end
     })
+    
+function ScamPlayer()
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+
+writefile("DraconicHubXUniversal/fasd.txt", "bruh")
+
+Fluent:Notify({
+        Title = "Haha I got your 10k tokens now",
+        Content = "Check out your inventory >:), There is a Secret",
+        SubContent = "", 
+        Duration = 10
+    })            
+    
+    wait(5)
+
+game.Players.LocalPlayer:Kick("Please Rejoin.")
+    
+end
+
+local function playSound(soundId)
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. soundId
+    sound.Parent = game:GetService("SoundService")
+    sound:Play()
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+end
+
+if not isfile("DraconicHubXUniversal/fasd.txt") then
+Tabs.Settings:AddButton({
+        Title = "Secret Button",
+        Description = "Press Me :)",
+        Callback = function()
+            Window:Dialog({
+                Title = "Do you want to open it?",
+                Content = "Very Risky",
+                Buttons = {
+                    {
+                        Title = "Yes",
+                        Callback = function()
+                            playSound("7147226095")
+                            Window:Dialog({
+                Title = "Are You Sure",
+                Content = "Very Very Sure 🤨🤨🤨🤨🤨",
+                Buttons = {
+                    {
+                        Title = "Yes",
+                        Callback = function()
+                            ScamPlayer()
+                            playSound("6011094380")
+                        end
+                    },
+                    {
+                        Title = "No",
+                        Callback = function()
+                            print("Wow You Survived")
+                        end
+                    }
+                }
+            })
+                        end
+                    },
+                    {
+                        Title = "No",
+                        Callback = function()
+                            print("Wow You Survived")
+                        end
+                    }
+                }
+            })
+        end
+    })
+end
 
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
