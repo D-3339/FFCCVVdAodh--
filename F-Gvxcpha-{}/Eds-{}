@@ -1420,7 +1420,7 @@ local TSpeed2 = 1500
 local TJump = 3
 local TJump2 = 3
 
-local function cacheTables()
+function cacheTables()
     local gcObjects = getgc(true)
     for _, v in ipairs(gcObjects) do
         if type(v) == "table" and rawget(v, "SprintCap") and v.Speed and v.JumpHeight then
@@ -1430,11 +1430,20 @@ local function cacheTables()
     end
 end
 
+function setTFriction(newFriction)
+    if TFriction ~= newFriction then
+        TFriction = newFriction
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "Friction", newFriction)
+        end
+    end
+end
+
 function setTSpeed(newSpeed)
     if TSpeed ~= newSpeed then
         TSpeed = newSpeed
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "Speed", TSpeed)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "Speed", newSpeed)
         end
     end
 end
@@ -1442,8 +1451,8 @@ end
 function setTJump(newJump)
     if TJump ~= newJump then
         TJump = newJump
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "JumpHeight", TJump)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "JumpHeight", TJump)
         end
     end
 end
@@ -1451,17 +1460,8 @@ end
 function setTJumpCap(newJumpCap)
     if TJumpCap ~= newJumpCap then
         TJumpCap = newJumpCap
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "JumpCap", TJumpCap)
-        end
-    end
-end
-
-function setTFriction(newFriction)
-    if TFriction ~= newFriction then
-        TFriction = newFriction
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "Friction", newFriction)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "JumpCap", TJumpCap)
         end
     end
 end
@@ -1469,9 +1469,9 @@ end
 function setStrafeAcceleration(newAcceleration)
     if StrafeAcceleration ~= newAcceleration then
         StrafeAcceleration = newAcceleration
-        for _, v in ipairs(CachesAdjusment) do
-            rawset(v, "AirStrafeAcceleration", StrafeAcceleration)
-            rawset(v, "AirAcceleration", 3)
+        for i = 1, cacheCount do
+            rawset(CachesAdjusment[i], "AirStrafeAcceleration", StrafeAcceleration)
+            rawset(CachesAdjusment[i], "AirAcceleration", 3)
         end
     end
 end
@@ -1846,7 +1846,7 @@ target.AutoCarryToggle:Destroy()
 end
 end
     
-local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry (I'll remove this later)", Default = false})
+local Toggle = Tabs.Misc:AddToggle("AutoCarry", {Title = "Auto Carry", Default = false})
 
 Toggle:OnChanged(function(State)
     AutoCarryGui = State
@@ -2416,9 +2416,214 @@ local Input = Tabs.Misc:AddInput("GravityAdjust", {
     
 Tabs.Misc:AddParagraph({
         Title = " ",
-        Content = "BHOP Features will be back soon."
+        Content = ""
     })
     
+local BHop = false
+local BHOPGuiSize = 75
+local delay = 1
+
+local BHop2 = false
+local BHopKey = false
+
+local function createtoggle()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.CoreGui
+    screenGui.Name = "BHopToggle"
+    screenGui.ResetOnSpawn = false
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, BHOPGuiSize, 0, BHOPGuiSize)
+    frame.Position = UDim2.new(1, -120, 0.5, -50)
+    frame.BackgroundColor3 = Color3.new(1, 1, 1)
+    frame.BorderSizePixel = 2
+    frame.BorderColor3 = Color3.new(0, 0, 0)
+    frame.BackgroundTransparency = 0
+    frame.Parent = screenGui
+    frame.Active = true
+    frame.Draggable = true
+    frame.ClipsDescendants = true
+    
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = frame
+
+    local toggleButton = Instance.new("TextButton")
+    toggleButton.Size = UDim2.new(1, 0, 1, 0)
+    toggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
+    toggleButton.BorderSizePixel = 0
+    toggleButton.TextColor3 = Color3.new(0, 0, 0)
+    toggleButton.Font = Enum.Font.GothamBold
+    toggleButton.TextSize = 14
+    toggleButton.Text = "Auto Jump: OFF"
+    toggleButton.Parent = frame
+    
+    toggleButton.MouseButton1Click:Connect(function()
+        BHop2 = not BHop2
+        toggleButton.Text = BHop2 and "Auto Jump: ON" or "Auto Jump: OFF"
+    end)
+    
+    MakeDraggable(toggleButton, frame)
+end
+
+-- Auto-Jump
+spawn(function()
+    while wait(0.01) do    
+        local HipHeight1 = 0
+        local HipHeight2 = 0
+    
+        if BHop2 == false then
+          if not FakeInfSlide then
+             setTFriction(5)
+         end
+           
+           local player = game:GetService("Players").LocalPlayer
+           local char = player.Character or player.CharacterAdded:Wait()
+           local humanoid = char:FindFirstChildOfClass("Humanoid")
+           
+           if char:FindFirstChild("R15Visual") then
+                HipHeight1 = 0.75
+                HipHeight2 = 1.25
+            else
+                HipHeight1 = -1.25
+                HipHeight2 = -0.8
+            end
+           
+           if humanoid then
+              humanoid.HipHeight = HipHeight1
+           end
+       end
+       
+        if BHop2 then
+            local player = game:GetService("Players").LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            
+            if not humanoid then return end
+
+            if BHOPType == "Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    setTFriction(-1)
+                    humanoid.HipHeight = HipHeight2
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+               else
+                    humanoid.HipHeight = HipHeight2
+                end
+            end
+            
+            if BHOPType == "No-Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+        end
+    end
+end)
+
+function destroytoggle()
+local target = game.CoreGui
+
+if target:FindFirstChild("BHopToggle") then
+target.BHopToggle:Destroy()
+end
+end
+
+local Toggle = Tabs.Misc:AddToggle("BHOPToggle", {Title = "BHOP Toggle", Default = false })
+
+    Toggle:OnChanged(function(State)
+       BHop = State
+       
+       if BHop then
+          createtoggle()
+       else
+          destroytoggle()
+      end
+end)
+
+local Keybind = Tabs.Misc:AddKeybind("KeyBHOP", {
+        Title = "Keybind to BHOP",
+        Mode = "Toggle", -- Always, Toggle, Hold
+        Default = "B",
+        
+        Callback = function(Bool)
+        BHopKey = Bool
+   end,
+    })
+    
+spawn(function()
+    while wait(0.01) do    
+        local HipHeight1 = 0
+        local HipHeight2 = 0
+    
+        if BHopKey == false then
+          if not FakeInfSlide then
+             setTFriction(5)
+         end
+           
+           local player = game:GetService("Players").LocalPlayer
+           local char = player.Character or player.CharacterAdded:Wait()
+           local humanoid = char:FindFirstChildOfClass("Humanoid")
+           
+           if char:FindFirstChild("R15Visual") then
+                HipHeight1 = 0.75
+                HipHeight2 = 1.25
+            else
+                HipHeight1 = -1.25
+                HipHeight2 = -0.8
+            end
+           
+           if humanoid then
+              humanoid.HipHeight = HipHeight1
+           end
+       end
+       
+        if BHopKey then
+            local player = game:GetService("Players").LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+            
+            if not humanoid then return end
+
+            if BHOPType == "Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    setTFriction(-1)
+                    humanoid.HipHeight = HipHeight2
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+               else
+                    humanoid.HipHeight = HipHeight2
+                end
+            end
+            
+            if BHOPType == "No-Acceleration" then
+                if humanoid.FloorMaterial ~= Enum.Material.Air then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+        end
+    end
+end)
+
+local Dropdown = Tabs.Misc:AddDropdown("BHOPType", {
+        Title = "Select BHOP Type",
+        Values = {"Acceleration", "No-Acceleration"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        BHOPType = Value
+    end)
+
+local Input = Tabs.Misc:AddInput("GuiSize", {
+        Title = "BHOP Gui Size",
+        Default = "75",
+        Placeholder = "Size Number",
+        Numeric = false, -- Only allows numbers
+        Finished = false, -- Only calls callback when you press enter
+        Callback = function(Value)
+            BHOPGuiSize = tonumber(Value) or 75
+        end
+    })
 
  Tabs.Misc:AddParagraph({
         Title = "Game Visual Modification and Optimization",
