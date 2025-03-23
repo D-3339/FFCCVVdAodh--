@@ -2483,7 +2483,7 @@ spawn(function()
            
            if char:FindFirstChild("R15Visual") then
                 HipHeight1 = 0.75
-                HipHeight2 = 1.25
+                HipHeight2 = 1
             else
                 HipHeight1 = -1.25
                 HipHeight2 = -0.8
