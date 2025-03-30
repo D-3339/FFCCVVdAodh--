@@ -177,7 +177,7 @@ local SizeGuiZ = 460
 
 local Window = Fluent:CreateWindow({
     Title = "Draconic Hub X Evade (Overhaul)",
-    SubTitle = "V2.8 Made by LuckyDragon910 discord.gg/d2a3KkTD6r",
+    SubTitle = "V2.8 Made by LuckyDragon910 discord.gg/Uqxu4mhnUJ",
     TabWidth = 160,
     Size = UDim2.fromOffset(SizeGuiX, SizeGuiZ),
     Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
