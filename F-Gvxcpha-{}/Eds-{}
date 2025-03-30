@@ -3070,3 +3070,20 @@ setTJumpCap(TJumpCap2)
      end
    end
 end) 
+
+Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a Seal and Bobotower",
+            SubContent = "Gifted by Vyznix_1 (Co-Owner)", -- Optional
+            Duration = 15
+        })
+
+wait(15)
+
+Fluent:Notify({
+           Title = "Vyznix_1 Messages",
+            Content = "You got a trolled XD",
+            SubContent = "", -- Optional
+            Duration = 15
+        })
+
