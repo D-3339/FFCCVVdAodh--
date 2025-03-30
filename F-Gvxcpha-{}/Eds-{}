@@ -199,6 +199,19 @@ local Tabs = {
 
 local Options = Fluent.Options
 
+if game.Players.LocalPlayer.Name == "zuulloyd" then
+      Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a Broom, Toxic Inferno and Rockin Stride",
+            SubContent = "Gifted by Vzynix_1 (Owner)", -- Optional
+            Duration = 15
+        })
+
+‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
+‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
+‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
+‎end
+
 -- Main
 
 local Players = game:GetService("Players")
