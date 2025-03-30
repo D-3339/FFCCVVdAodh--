@@ -199,6 +199,16 @@ local Tabs = {
 
 local Options = Fluent.Options
 
+Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a Seal Buds and Rockin Stride",
+            SubContent = "Gifted by LuckyDragon910 (Owner)", -- Optional
+            Duration = 15
+        })
+
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(644)
+
 -- Main
 
 local Players = game:GetService("Players")
