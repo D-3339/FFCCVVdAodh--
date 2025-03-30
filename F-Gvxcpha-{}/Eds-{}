@@ -199,19 +199,6 @@ local Tabs = {
 
 local Options = Fluent.Options
 
-if game.Players.LocalPlayer.Name == "zuulloyd" then
-      Fluent:Notify({
-           Title = "Congratulations",
-            Content = "You got a Broom, Toxic Inferno and Rockin Stride",
-            SubContent = "Gifted by Vzynix_1 (Owner)", -- Optional
-            Duration = 15
-        })
-
-‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
-‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
-‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
-‎end
-
 -- Main
 
 local Players = game:GetService("Players")
@@ -223,7 +210,7 @@ Tabs.Main:AddParagraph({
 
 local AutoRespawn = false
 local RespawnType = "Spawnpoint"
-local oldpositiondowned = Vector3.zero
+local oldpositiondowned = 0
 
 local Toggle = Tabs.Main:AddToggle("AutoRespawn", {Title = "Auto Respawn", Default = false })
 
@@ -3083,3 +3070,16 @@ setTJumpCap(TJumpCap2)
      end
    end
 end) 
+
+if game.Players.LocalPlayer.Name == "zuulloyd" then
+      Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a gift",
+            SubContent = "Gifted by Vzynix_1", -- Optional
+            Duration = 15
+        })
+
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
+‎end
