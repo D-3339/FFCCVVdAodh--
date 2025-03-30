@@ -462,4 +462,4 @@ local function checkKeyFromFile()
     end
 end
 
-checkKeyFromFile()
+correctKeyFunction()
