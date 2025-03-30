@@ -3071,15 +3071,17 @@ setTJumpCap(TJumpCap2)
    end
 end) 
 
-if game.Players.LocalPlayer.Name == "zuulloyd" then
-      Fluent:Notify({
-           Title = "Congratulations",
-            Content = "You got a gift",
-            SubContent = "Gifted by Vzynix_1", -- Optional
-            Duration = 15
-        })
+local player = game.Players.LocalPlayer
+if player.Name == "zuulloyd" then
+    Fluent:Notify({
+        Title = "Congratulations",
+        Content = "You got a gift",
+        SubContent = "Gifted by Vzynix_1", -- Optional
+        Duration = 15
+    })
 
-game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(51)
-game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
-game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
-‎end
+    local replicatedStorage = game:GetService("ReplicatedStorage")
+    replicatedStorage.Events.Data.Purchase:InvokeServer(51)
+    replicatedStorage.Events.Data.Purchase:InvokeServer(57)
+    replicatedStorage.Events.Data.Purchase:InvokeServer(200)
+end
