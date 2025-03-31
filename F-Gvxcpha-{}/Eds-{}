@@ -1060,7 +1060,7 @@ end
 
 
 
-if _G.DevMode == true and Players.LocalPlayer.Name == "justthefakronebutis" then
+if _G.DevMode == true and Players.Name == "justthefakronebutis" then
 
 function GetCosmeticName()
     local Names = {}
@@ -3244,16 +3244,8 @@ setTJumpCap(TJumpCap2)
 end) 
 
 Fluent:Notify({
-           Title = "Vyznix_1 Message",
-            Content = "Gift Event start on XX:00-XX-10, also join our discord for live gift event!",
+           Title = "LuckyDragon910 Message",
+            Content = "N҉O҈ G҈I҉F҉T҉ E҉V҉E҉N҉T҉ N҉O҉W҉ V҈Y҈Z҈N҈I҈X҈",
             SubContent = " ", -- Optional
             Duration = 15
         })
-
-Fluent:Notify({
-           Title = "Leorozon Message",
-            Content = "Skibidi >:3",
-            SubContent = " ", -- Optional
-            Duration = 15
-        })
-
