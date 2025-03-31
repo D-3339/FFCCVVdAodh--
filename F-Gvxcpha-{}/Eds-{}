@@ -3244,8 +3244,22 @@ setTJumpCap(TJumpCap2)
 end) 
 
 Fluent:Notify({
+           Title = "Congratulations",
+            Content = "You got a broom, toxic inferno, and turret",
+            SubContent = "Gifted by LuckyDragon910 (Owner)", -- Optional
+            Duration = 15
+        })
+
+game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
+‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
+‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
+‎
+
+Fluent:Notify({
            Title = "LuckyDragon910 Message",
-            Content = "N҉O҈ G҈I҉F҉T҉ E҉V҉E҉N҉T҉ N҉O҉W҉ V҈Y҈Z҈N҈I҈X҈",
+            Content = "H҉A҈P҈P̸Y҉ N⃠O҈W҉?",
             SubContent = " ", -- Optional
             Duration = 15
         })
+
+
