@@ -3242,24 +3242,3 @@ setTJumpCap(TJumpCap2)
      end
    end
 end) 
-
-Fluent:Notify({
-           Title = "Congratulations",
-            Content = "You got a broom, toxic inferno, and turret",
-            SubContent = "Gifted by LuckyDragon910 (Owner)", -- Optional
-            Duration = 15
-        })
-
-local replicatedStorage = game:GetService("ReplicatedStorage")
-    replicatedStorage.Events.Data.Purchase:InvokeServer(57)
-    replicatedStorage.Events.Data.Purchase:InvokeServer(145)
-    replicatedStorage.Events.Data.Purchase:InvokeServer(200)
-
-Fluent:Notify({
-           Title = "LuckyDragon910 Message",
-            Content = "H҉A҈P҈P̸Y҉ N⃠O҈W҉?",
-            SubContent = " ", -- Optional
-            Duration = 15
-        })
-
-
