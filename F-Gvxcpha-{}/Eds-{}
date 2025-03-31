@@ -3072,18 +3072,16 @@ setTJumpCap(TJumpCap2)
 end) 
 
 Fluent:Notify({
-           Title = "Congratulations",
-            Content = "You got a Seal and Bobotower",
-            SubContent = "Gifted by Vyznix_1 (Co-Owner)", -- Optional
+           Title = "Vyznix_1 Message",
+            Content = "Gift Event start on XX:00-XX-10, also join our discord for live gift event!",
+            SubContent = " ", -- Optional
             Duration = 15
         })
 
-wait(15)
-
 Fluent:Notify({
-           Title = "Vyznix_1 Messages",
-            Content = "You got a trolled XD",
-            SubContent = "", -- Optional
+           Title = "Leorozon Message",
+            Content = "Skibidi >:3",
+            SubContent = " ", -- Optional
             Duration = 15
         })
 
