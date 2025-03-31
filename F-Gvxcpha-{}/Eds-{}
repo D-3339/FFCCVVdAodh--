@@ -3250,10 +3250,10 @@ Fluent:Notify({
             Duration = 15
         })
 
-game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(57)
-‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(145)
-‎game:GetService("ReplicatedStorage").Events.Data.Purchase:InvokeServer(200)
-‎
+local replicatedStorage = game:GetService("ReplicatedStorage")
+    replicatedStorage.Events.Data.Purchase:InvokeServer(57)
+    replicatedStorage.Events.Data.Purchase:InvokeServer(145)
+    replicatedStorage.Events.Data.Purchase:InvokeServer(200)
 
 Fluent:Notify({
            Title = "LuckyDragon910 Message",
