@@ -1060,7 +1060,7 @@ end
 
 
 
-if _G.DevMode == true and Players.Name == "justthefakronebutis" then
+if _G.DevMode == true and Players.LocalPlayer.Name == "justthefakronebutis" then
 
 function GetCosmeticName()
     local Names = {}
